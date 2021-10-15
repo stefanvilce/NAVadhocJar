@@ -19,7 +19,7 @@ public class Task {
   private String expire_date;
   private String doc_format;
   private String csserver_id;
-  private String preview_doc;
+  private byte[] preview_doc;
   
 
   public Task(){
@@ -27,7 +27,7 @@ public class Task {
   }
 
   public Task(String task_id, String status, String requester, String date_received, String time_received, String deadline, Integer max_doc_split,
-  			 Integer docs_in_job, Integer docs_distributed, String expire_date, String doc_format, String csserver_id, String preview_doc) 
+  			 Integer docs_in_job, Integer docs_distributed, String expire_date, String doc_format, String csserver_id, byte[] preview_doc) 
   {
       this.task_id = task_id;
       this.status = status;
@@ -140,11 +140,11 @@ public class Task {
 		this.csserver_id = csserver_id;
 	}
 
-	public String getPreview_doc() {
+	public byte[] getPreview_doc() {
 		return preview_doc;
 	}
 
-	public void setPreview_doc(String preview_doc) {
+	public void setPreview_doc(byte[] preview_doc) {
 		this.preview_doc = preview_doc;
 	}
 

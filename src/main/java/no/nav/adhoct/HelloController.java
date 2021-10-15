@@ -4,8 +4,8 @@ package no.nav.adhoct;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.adhoct.models.Doc_receiver;
-import no.nav.adhoct.models.Input_file;
+import no.nav.adhoct.models.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +52,7 @@ public class HelloController {
 	    			+ "</tr>"; 
         }
 	    textul += " </table><hr></div>";
+	    textul += "<div style='text-align: center; padding: 30px;'><a href='/nyjobb' style='padding: 5px 40px 5px 40px; background-color: 4444CD; color: white; font-weight: 600; border-radius:1px; text-decoration: none; font-family: Tahoma;'>Registrer ny jobb</a></div>";
 	    textul += "<a href='/alldocs'>Go to DOC RECEIVER Table</a>";
 		return textul;
 	}

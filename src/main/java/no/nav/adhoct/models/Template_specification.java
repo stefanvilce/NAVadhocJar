@@ -8,13 +8,13 @@ public class Template_specification {
 
   private String task_uuid;
   private String file_type;
-  private String file_object;
+  private byte[] file_object;
 
   public Template_specification(){
 
   }
 
-  public Template_specification(String task_uuid, String file_type, String file_object) {
+  public Template_specification(String task_uuid, String file_type, byte[] file_object) {
       this.task_uuid = task_uuid;
       this.file_type = file_type;
       this.file_object = file_object;
@@ -36,11 +36,11 @@ public class Template_specification {
       this.file_type = file_type;
   }
 
-  public String getFile_object() {
+  public byte[] getFile_object() {
       return file_object;
   }
 
-  public void setFile_object(String file_object) {
+  public void setFile_object(byte[] file_object) {
       this.file_object = file_object;        
   }
 
