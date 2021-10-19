@@ -29,14 +29,14 @@ public class HelloController {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(HelloController.class);
 	
-	@GetMapping("/")
+	@GetMapping("/indexvechi")
 	public String index() {
 		
 		String sql = "SELECT * FROM INPUT_FILE";
 		List<Input_file> inputfile = jdbcTemplate.query(sql,
 	                BeanPropertyRowMapper.newInstance(Input_file.class));
 	         
-		LOGGER.info("De aici vine treaba");
+		LOGGER.info("Opening first page");
 	    
 		String textul = "<div style='font-family: Arial; color: #344596;'><H1 style='text-align: center; '>AdHoc App</H1><h2 style='text-align: center;color: #DA7643;'>Tabellen INPUT_FILE</h2>";
 		textul += "<table style='border: 1px dashed #DCDCDC;'>"
@@ -58,13 +58,15 @@ public class HelloController {
 	}
 	
 	
-	@GetMapping("/alldocs")
+	@GetMapping("/alldocsvechi")
 	public String doc_receiverListAll() {
 		
 		String sql = "SELECT * FROM DOC_RECEIVER";
 		List<Doc_receiver> alldocs = jdbcTemplate.query(sql,
 	                BeanPropertyRowMapper.newInstance(Doc_receiver.class));
 	   
+		LOGGER.info("See all docs");
+		
 	    String textul = "<div style='font-family: Arial; color: #344596;'><H1 style='text-align: center; '>AdHoc App</H1><h2 style='text-align: center;color: #DA7643;'>Tabellen DOC_RECEIVER</h2>";
 	    textul += "<table style='border: 1px dashed #DCDCDC;'>"
 	    		+ "<tr style='text-align: center; font-weight: bold; border: 1px solid #878787; padding: 1px;'>"

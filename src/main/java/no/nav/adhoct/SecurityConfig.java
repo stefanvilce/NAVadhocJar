@@ -1,4 +1,6 @@
 package no.nav.adhoct;
+
+
 /*
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
