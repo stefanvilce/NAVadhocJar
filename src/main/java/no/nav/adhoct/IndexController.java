@@ -55,10 +55,9 @@ public class IndexController {
 	    			+ "</tr>"; 
         }
 	    textul += " </table><hr></div>";
-	    textul += "<div style='text-align: center; padding: 30px;'><a href='/nyjobb' style='padding: 10px 40px 10px 40px; background-color: #4444CD; color: white; font-weight: 600; border-radius:1px; text-decoration: none; font-family: Tahoma;'>Registrer ny jobb/task</a></div>";
+	    textul += "<div style='text-align: center; padding: 30px;'><a href='/nyjobb' class='linkknapp'>Registrer ny jobb/task</a></div>";
 	    textul += "<a href='/alldocs'>Go to DOC RECEIVER Table</a>";
-	    model.addAttribute("content", textul);
-		
+	    model.addAttribute("content", textul);		
 		return "index";
 	}
 
@@ -96,11 +95,9 @@ public class IndexController {
 	    			+ "			<td style='border: 1px solid #B8B8B8; padding: 2px; font-size: 10px;'>" + row.getCountry() + "</td>"
 	    			+ "</tr>";           
         }
-	    textul += " </table><hr></div>";
-		
+	    textul += " </table><hr></div>";		
 	    textul += "<a href='/'>Go to INPUT_FILE Table</a>";
-	    model.addAttribute("content", textul);
-		
+	    model.addAttribute("content", textul);		
 		return "index";
 	}
 }
