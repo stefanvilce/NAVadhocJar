@@ -12,8 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import no.nav.adhoct.models.Doc_receiver;
-import no.nav.adhoct.models.Input_file;
+import no.nav.adhoct.models.*;
 
 
 
@@ -34,7 +33,7 @@ public class IndexController {
 	}
 	
 	
-	@GetMapping("/")
+	@GetMapping("/home")
 	public String index(Model model) {
 		model.addAttribute("title", "AdHoc App");
 		model.addAttribute("subtitle", "Tabellen INPUT_FILE");			
