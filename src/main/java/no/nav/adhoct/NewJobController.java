@@ -6,15 +6,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
-
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +56,6 @@ public class NewJobController {
 	public String nyjobbPost(@RequestParam("uuid") String uuid, @RequestParam(value = "file", required = false) MultipartFile file, Model model) throws IOException {		     
 		model.addAttribute("title", "AdHoc App");
 		model.addAttribute("subtitle", "Ny Jobb, lagre fil");
-		LOGGER.info("The new job is saved.");
 		String textul = " . . . saving . . . ";
 	    String filename = "";
 	    String extension = "";
@@ -70,10 +66,52 @@ public class NewJobController {
 	    	extension = getExtension[getExtension.length - 1];
 	    	fileContent = file.getBytes();
 	    }
-	    textul += " <hr> <meta http-equiv='refresh' content='1; url=/'>";
-	    jdbcTemplate.update("INSERT INTO INPUT_FILE(TASK_UUID, FILE_TYPE, FILE_OBJECT) VALUES (?,?,?)", uuid, extension, fileContent);	    
+	    textul += " <hr> <meta http-equiv='refresh' content='1; url=/'>";	    
+	    
+	    int records = checkInputFile(uuid);
+	    
+	    if(records > 0) {
+	    	textul = "There is a file for this Task already.<br>Try again with another Task ID! <hr> <meta http-equiv='refresh' content='3; url=/nyjobb'>";	    	
+	    } else {
+	    	LOGGER.info("The new job is saved.");
+	    	int checkTask_idInTASKtbl = checkTask(uuid);
+	    	if(checkTask_idInTASKtbl > 0) {
+	    		jdbcTemplate.update("INSERT INTO INPUT_FILE(TASK_UUID, FILE_TYPE, FILE_OBJECT) VALUES (?,?,?)", uuid, extension, fileContent);
+	    	} else {
+	    		jdbcTemplate.update("INSERT INTO TASK(TASK_ID) VALUES (?)", uuid);
+	    		jdbcTemplate.update("INSERT INTO INPUT_FILE(TASK_UUID, FILE_TYPE, FILE_OBJECT) VALUES (?,?,?)", uuid, extension, fileContent);
+	    		LOGGER.info("New TASK_ID created. The new TASK_ID is " + uuid);
+	    	}
+	    }
+	    
 	    model.addAttribute("content", textul);
 		return "index";
+	}
+	
+	
+	public Integer checkInputFile(String uuid) {
+		String sql = "SELECT COUNT(*) FROM INPUT_FILE WHERE TASK_UUID='" + uuid + "'";
+		List<Integer> i = jdbcTemplate.queryForList(sql, Integer.class);
+		if (i.size() == 0) { 
+			return 0; 
+			} 
+		else  {		
+			LOGGER.info("We have found another  " + i.get(0) + " record(s) with the same TASK_UUID in the INPUT_FILE table.");
+			return i.get(0);
+		}
+	}
+	
+	
+	public Integer checkTask(String uuid) {
+		String sql = "SELECT COUNT(*) FROM TASK WHERE TASK_ID='" + uuid + "'";
+		List<Integer> i = jdbcTemplate.queryForList(sql, Integer.class);
+		if (i.size() == 0) { 
+			return 0; 
+			} 
+		else  {		
+			LOGGER.info("We have found another  " + i.get(0) + " record(s) with the same TASK_ID in the TASK table.");
+			return i.get(0);
+		}
 	}
 	
 	

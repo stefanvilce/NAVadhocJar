@@ -100,4 +100,14 @@ public class IndexController {
 	    model.addAttribute("content", textul);		
 		return "index";
 	}
+	
+	
+	
+	
+	public void heiHeii() {
+		int n = 1;
+		int p = n +1000;
+		System.out.println("Buuey, uite ce avem noi aici: Il avem pe P si pe N: " + p);
+	}
+	
 }
