@@ -1,12 +1,9 @@
 import React, {Component} from 'react';
-import {Navbar, NavbarBrand} from 'reactstrap';
 import {Link} from 'react-router-dom';
 //import { Hovedknapp, Fareknapp } from 'nav-frontend-knapper';
 import { Container, Row, Column } from "nav-frontend-grid";
 import { Panel } from 'nav-frontend-paneler';
 import { Hovedknapp } from 'nav-frontend-knapper';
-//import { useHistory } from 'react-router-dom';
-//import { Redirect } from 'react-router-dom';
 
 
 export default class AppNavbar extends Component {
@@ -48,8 +45,8 @@ export default class AppNavbar extends Component {
 				            <ul className="nav-empower-button-list">
 				            	<li><Link to="/"><Hovedknapp className="nav-empower-button">Home</Hovedknapp></Link></li>
 				            	<li><Link to="/tasks"><Hovedknapp className="nav-empower-button">Jobb list</Hovedknapp></Link></li>
-				            	<li><Link to="/r_docreceiver"><Hovedknapp className="nav-empower-button">Doc receiver</Hovedknapp></Link></li>
-				            	<li><Link to="/r_nyjobb"><Hovedknapp className="nav-empower-button">Ny Jobb</Hovedknapp></Link></li>				            	
+				            	<li><Link to="/r_docreceiver"><Hovedknapp className="nav-empower-button">Brev mottaker liste</Hovedknapp></Link></li>
+				            	<li><Link to="/nyjobb"><Hovedknapp className="nav-empower-button">Ny Jobb</Hovedknapp></Link></li>				            	
 				            </ul>
 				        </Column>
 				    </Row>    

@@ -10,15 +10,40 @@ class Tasks extends Component {
 	
 	constructor(props) {
         super(props);
-        this.state = {tasks: []};
+        this.addTheTitle = this.addTheTitle.bind(this);
+        this.getTaskId = this.getTaskId.bind(this);
+        this.getConsole = this.getConsole.bind(this);
+        this.state = {
+        		tasks: [],
+        		button: 'Gicule',
+        		job: '200'
+        };
     }
 
     componentDidMount() {
         fetch('/task/all')
             .then(response => response.json())
             .then(data => this.setState({tasks: data}));
+        document.title = this.addTheTitle();
+        console.log("Textele care vin si pleaca.....");
+    }
+    
+    
+    addTheTitle(){
+    		return "Texte de salvat";
+    }
+    
+    getTaskId(taskId){
+    	alert("Goguleee, " + this.state.button);
+    	this.setState({job: taskId}).then(this.getConsole());    	
+    }
+    
+    getConsole(){
+    	//functia asta este doar de test
+    	console.log("Si acum, esteeee: " + this.state.job);
     }
 	
+    
     render() {
     	const {tasks} = this.state;
     	/*
@@ -27,8 +52,10 @@ class Tasks extends Component {
         }
         */
     	
+    	//console.log("Test, bueey");l
+    	
     	const tasksList = tasks.map(task => {
-            return <tr key={task.task_id}>
+            return <tr key={task.task_id} onClick={() => { this.getTaskId(task.task_id) }}>
             	<td>{task.task_id}</td>
             	<td>{task.status}</td>
                 <td>{task.requester}</td>
@@ -45,7 +72,7 @@ class Tasks extends Component {
                 <AppNavbar/>
                 <Container className="stfRight">
 	            	<h1>AdHoc App</h1>
-	            	<h2>Task tabellen</h2>
+	            	<h2>Jobb oversikt</h2>
 	            	<hr />	            	
 	            	<table className="tabell tabell--stripet">
                     <thead>

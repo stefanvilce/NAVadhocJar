@@ -14,9 +14,9 @@ class App extends Component {
         <Router>
           <Switch>
             <Route path='/' exact={true} component={Home}/>
+            <Route path='/nyjobb' exact={true} component={Nyjobb}/>
             <Route path='/tasks' component={Tasks}/>
             <Route path='/r_docreceiver' component={Doc_receiver}/>
-            <Route path='/r_nyjobb' exact={true} component={Nyjobb}/>
           </Switch>
         </Router>        
     )

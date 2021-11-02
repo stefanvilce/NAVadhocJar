@@ -38,9 +38,10 @@ public class NewJobController {
 	    		+ "<form action='/nyjobb' method='post' style='text-align: left; border: 1px solid #878787; padding: 25px; width: 400px; margin: auto;' enctype=\"multipart/form-data\">"
 	    		+ "				UUID:<br>"
 	    		+ "				<input type='text' name='uuid' value='1' enabled='false' style='width: 100%;' class='skjemaelement__input'  /><br>  <br>"
-	    		+ "				File:<br>"
+	    		+ "				Valgt fil:<br>"
 	    		+ "				<input type='file' name='file' style='width: 100%;' class='skjemaelement__input' /><br> <br>"
-	    		+ "	    		<input type='submit' name='submit' value='Send' class='knapp'  /> <input type='reset' name='submit' value='Cancel' class='knapp knapp--fare'  />"
+	    		+ "	    		<input type='submit' name='submit' value='Last opp fil' class='knapp'  /> "
+	    		+ "				<input type='reset' name='cancel' value='Anuller' class='knapp knapp--fare' onclick=\"javascript:window.location='/';\"  />"
 	    		+ "</form>";
 	    
 	    textul += " </div> ";
