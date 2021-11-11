@@ -5,16 +5,21 @@ import { Container, Row, Column } from "nav-frontend-grid";
 import { Panel } from 'nav-frontend-paneler';
 import { Hovedknapp } from 'nav-frontend-knapper';
 
-
 export default class AppNavbar extends Component {
     constructor(props) {
         super(props);
         this.state = {isOpen: false};
         this.toggle = this.toggle.bind(this);
         this.go2nyjobb = this.go2nyjobb.bind(this);
-        //this.handleClick = this.handleClick.bind(this);
-        //this.history = this.history.bind(this);
+        this.state = {
+        		link: ""
+        };
     }
+    
+    componentDidMount() {
+        this.setState({link: window.location.pathname.split('/')[1]});
+    }
+    
 
     toggle() {
         this.setState({
@@ -22,8 +27,12 @@ export default class AppNavbar extends Component {
         });
     }
     go2nyjobb() {
+    	//Mai tin functia asta aici doar ca sa mai verific din cand in cand care e starea// de testare
     	//this.props.history = useHistory();
-        this.props.history.push('/nyjobb');
+    	
+    	const applicationPath = window.location.pathname.split('/')[1];
+    	console.log("Este calea: " + applicationPath);
+        //this.props.history.push('/nyjobb');
         
         //const history = useHistory();
         //history.push("/nyjobb");
@@ -39,22 +48,33 @@ export default class AppNavbar extends Component {
     	    history.push("/nyjobb");
     	} */   
     	//const history = useHistory();
+    	var getConsole = this.props.getConsole;
+    	//var getConsole = this.props.getConsole;
+    	
         return <><Panel><Container className="nav-empower-frontend-container">
-			        <Row className="nav-empower-frontend-row">
-				        <Column className="nav-empower-frontend-column-buttons col-sm-2">
-				            <ul className="nav-empower-button-list">
-				            	<li><Link to="/"><Hovedknapp className="nav-empower-button">Home</Hovedknapp></Link></li>
-				            	<li><Link to="/tasks"><Hovedknapp className="nav-empower-button">Jobb list</Hovedknapp></Link></li>
-				            	<li><Link to="/r_docreceiver"><Hovedknapp className="nav-empower-button">Brev mottaker liste</Hovedknapp></Link></li>
-				            	<li><Link to="/nyjobb"><Hovedknapp className="nav-empower-button">Ny Jobb</Hovedknapp></Link></li>				            	
-				            </ul>
-				        </Column>
-				    </Row>    
+					        <Row className="nav-empower-frontend-row">
+						        <Column className="nav-empower-frontend-column-buttons col-sm-2">
+						            <ul className="nav-empower-button-list">
+						            	<li><Link to="/"><Hovedknapp className="nav-empower-button">Startside</Hovedknapp></Link></li>
+						            	<li><Link to="/nyjobb"><Hovedknapp className="nav-empower-button">Ny jobb</Hovedknapp></Link></li>
+						            	<li><Link to="/tasks"><Hovedknapp className="nav-empower-button">Jobboversikt</Hovedknapp></Link></li>
+						            	{this.state.link == "tasks"
+						                    ? 
+						                    <li><Hovedknapp className="nav-empower-button" onClick={() => { getConsole(); }}>Brevmottakerliste</Hovedknapp></li>
+						                	: null
+						                }
+						            					            	
+						            </ul>
+						        </Column>
+						    </Row>    
 				    	</Container>
 				</Panel>
         </>;
     }
 }
+
+
+
 /*
  * 
  * <Navbar color="dark" dark expand="md">

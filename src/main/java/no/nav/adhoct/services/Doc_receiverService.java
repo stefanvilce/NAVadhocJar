@@ -23,4 +23,12 @@ public class Doc_receiverService {
 		return docreceiver_list;
     }
 	
+	
+	public List<Doc_receiver> listByTaskId(String task_id){
+		String sql = "SELECT * FROM DOC_RECEIVER WHERE TASK_UUID='" + task_id + "'";
+		List<Doc_receiver> docreceiver_list = jdbcTemplate.query(sql,
+	                BeanPropertyRowMapper.newInstance(Doc_receiver.class));
+		return docreceiver_list;
+	}
+	
 }

@@ -13,9 +13,9 @@ class Home extends Component {
                 <AppNavbar/>
                 <Container className="stfRight">
                 	<h1>AdHoc App</h1>
-                	<h2>Welcome!</h2>
+                	<h2> </h2>
                 	<hr />
-                	<p>Welcome on the AdHoc App!</p>
+                	<p>Velkommen til AdHoc brevproduksjon</p>
                 </Container>
             </div>
         );
