@@ -11,8 +11,10 @@ export default class AppNavbar extends Component {
         this.state = {isOpen: false};
         this.toggle = this.toggle.bind(this);
         this.go2nyjobb = this.go2nyjobb.bind(this);
+        this.knappBrevmottaker = this.knappBrevmottaker.bind(this);
         this.state = {
-        		link: ""
+        		link: "",
+        		knappBrevmottakerliste: "Brevmottakerliste"
         };
     }
     
@@ -26,6 +28,15 @@ export default class AppNavbar extends Component {
             isOpen: !this.state.isOpen
         });
     }
+    
+    knappBrevmottaker(ind){
+    	if(ind === 1)
+    		this.setState({knappBrevmottakerliste: "Oppdater status info"})
+    	else
+    		this.setState({knappBrevmottakerliste: "Brevmottakerliste"})
+    }
+    
+    
     go2nyjobb() {
     	//Mai tin functia asta aici doar ca sa mai verific din cand in cand care e starea// de testare
     	//this.props.history = useHistory();
@@ -42,14 +53,8 @@ export default class AppNavbar extends Component {
 
     render() {
     	
-        //handleClick = () => history.push('/nyjobb');
-    	/*function handleClick() {
-    		let history = useHistory();
-    	    history.push("/nyjobb");
-    	} */   
-    	//const history = useHistory();
     	var getConsole = this.props.getConsole;
-    	//var getConsole = this.props.getConsole;
+    	var reloadTasks = this.props.reloadTasks;
     	
         return <><Panel><Container className="nav-empower-frontend-container">
 					        <Row className="nav-empower-frontend-row">
@@ -57,10 +62,16 @@ export default class AppNavbar extends Component {
 						            <ul className="nav-empower-button-list">
 						            	<li><Link to="/"><Hovedknapp className="nav-empower-button">Startside</Hovedknapp></Link></li>
 						            	<li><Link to="/nyjobb"><Hovedknapp className="nav-empower-button">Ny jobb</Hovedknapp></Link></li>
-						            	<li><Link to="/tasks"><Hovedknapp className="nav-empower-button">Jobboversikt</Hovedknapp></Link></li>
+						            	
 						            	{this.state.link == "tasks"
 						                    ? 
-						                    <li><Hovedknapp className="nav-empower-button" onClick={() => { getConsole(); }}>Brevmottakerliste</Hovedknapp></li>
+						                    <li><Hovedknapp className="nav-empower-button" onClick={() => { reloadTasks(); this.knappBrevmottaker(-1); }}>Jobboversikt</Hovedknapp></li>
+						                	: 
+						                	<li><Link to="/tasks"><Hovedknapp className="nav-empower-button">Jobboversikt</Hovedknapp></Link></li>
+						                }
+						            	{this.state.link == "tasks"
+						                    ? 
+						                    <li><Hovedknapp className="nav-empower-button" onClick={() => { getConsole(); this.knappBrevmottaker(1); }}>{this.state.knappBrevmottakerliste}</Hovedknapp></li>
 						                	: null
 						                }
 						            					            	

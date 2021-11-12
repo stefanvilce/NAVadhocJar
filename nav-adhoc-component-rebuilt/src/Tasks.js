@@ -13,6 +13,7 @@ class Tasks extends Component {
         this.addTheTitle = this.addTheTitle.bind(this);
         this.getTaskId = this.getTaskId.bind(this);
         this.getConsole = this.getConsole.bind(this);
+        this.reloadTasks = this.reloadTasks.bind(this);
         this.changeColor = this.changeColor.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.escFunction = this.escFunction.bind(this);
@@ -34,7 +35,6 @@ class Tasks extends Component {
             .then(data => this.setState({tasks: data}));
         document.title = this.addTheTitle();
         document.addEventListener("keydown", this.escFunction, false);
-        //console.log("Textele care vin si pleaca.....");
     }
     
     
@@ -47,8 +47,6 @@ class Tasks extends Component {
     }
     
     getConsole(){
-    	//functia asta este doar de test
-    	//console.log("Si acum, esteeee: " + this.state.job);
     	if(this.state.job < 1){
     		alert('Du må velge en linje først.');
     	} else {
@@ -58,33 +56,41 @@ class Tasks extends Component {
     	}    	
     }
     
-    /*
-    changeColor = selectedRow => e => {
-        if (selectedRow !== undefined) {
-          this.setState({ selectedRow  });
-        }
-      };*/
-      
-     changeColor(i){
-    	  this.setState({selectedRow: i });
-     }
+    reloadTasks(){
+    	this.setState({ showDocs: false, h2: "Jobboversikt" });
+    	fetch('/task/all')
+	        .then(response => response.json())
+	        .then(data => this.setState({tasks: data}));
+    }
+    
+          
+    changeColor(i){
+       this.setState({selectedRow: i });
+    }
      
      
-     escFunction(event){
-    	    if(event.keyCode === 27) {
-    	    	this.setState({ setEditMode: false, editTaskId: null });
-    	    }
-     }
+    escFunction(event){
+	    if(event.keyCode === 27) {
+	    	this.setState({ setEditMode: false, editTaskId: null });
+	    }
+    }
      
      
      handleKeyPress = (event) => {    	 
     	  if(event.key === 'Enter'){
     		const elId = this.state.editTaskId;  
-    		const inputValue = "33"; // document.getElementById("maxdocsInput"+elId).value;  
-    	    console.log('Enter press here! ' + inputValue);
-    	    //document.getElementById("maxdocs"+elId).innerText = " " + inputValue;
-    	   // console.log("this", this);    	    
-    	    this.setState({ setEditMode: false, editTaskId: null });
+    		const inputValue = document.getElementById("maxdocsInput" + elId).value;  
+    	    //console.log('Enter press here! ' + inputValue);    	    
+    	    var requestOptions = {
+    		  method: 'POST',
+    		  redirect: 'follow'
+    		};
+    		fetch("/task/update?task_id="+elId+"&max_doc_split="+inputValue, requestOptions)
+    		  .then(response => response.text())
+    		  .then(result => console.log(result))
+    		  .catch(error => console.log('error', error));
+    	    this.setState({ setEditMode: false, editTaskId: null });    	    
+    	    setTimeout(() => {this.reloadTasks()}, 500);
     	  }
      }
 	
@@ -211,14 +217,14 @@ class Tasks extends Component {
     	
     	const oppdatterStatus = (
     			<div className="central4button">
-    				<Knapp mini onClick={() => { this.getConsole(); }}>Opdatter status info</Knapp>
+    				<Knapp mini onClick={() => { this.getConsole(); }}>Oppdater status info</Knapp>
     			</div>
     	);
 	
     
         return (
             <div>
-                <AppNavbar getConsole = {this.getConsole} />
+                <AppNavbar getConsole = {this.getConsole} reloadTasks = {this.reloadTasks} />
                 <Container className="stfRight">
 	            	<h1>AdHoc App</h1>
 	            	<h2>{h2}</h2>

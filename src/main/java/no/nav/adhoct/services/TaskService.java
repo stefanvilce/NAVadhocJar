@@ -23,4 +23,13 @@ public class TaskService {
 		return task_list;
     }
 	
+	
+	public String update(int task_id, int max_doc_split) {
+		//String sql = "SELECT * FROM TASK";
+		jdbcTemplate.update("UPDATE TASK SET MAX_DOC_SPLIT = ? WHERE TASK_ID = ?", max_doc_split, task_id);
+		/*List<Task> task_list = jdbcTemplate.query(sql,
+	                BeanPropertyRowMapper.newInstance(Task.class));*/
+		return "OK";
+    }
+	
 }
