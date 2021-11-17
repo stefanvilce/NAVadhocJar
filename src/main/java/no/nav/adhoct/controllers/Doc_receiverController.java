@@ -43,7 +43,7 @@ public class Doc_receiverController {
 	
 	@GetMapping("/taskid/{task_id}")
 	public @ResponseBody ResponseEntity<List<Doc_receiver>> listByTaskId(@PathVariable String task_id) {	
-		LOGGER.info("GET NOOT all Documents from DOC_RECEIVER table. Only those with " + task_id);
+		LOGGER.info("Getting Documents from DOC_RECEIVER table for TASK_UUID=" + task_id);
 		try {
 			List<Doc_receiver> lista = service.listByTaskId(task_id);
 	        return new ResponseEntity<List<Doc_receiver>>(lista, HttpStatus.OK);

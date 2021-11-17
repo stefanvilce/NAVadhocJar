@@ -47,7 +47,7 @@ public class TaskController {
 	
 	
 	@PostMapping("/update")
-	public @ResponseBody ResponseEntity<String> update(@RequestParam(name = "task_id") int task_id, @RequestParam(name = "max_doc_split") int max_doc_split) {	
+	public @ResponseBody ResponseEntity<String> update(@RequestParam(name = "task_id") String task_id, @RequestParam(name = "max_doc_split") int max_doc_split) {	
 		String jsonString = "{ \"status\": \"success\", \"data\":{\"task_id\":" + task_id + "}}";
 		LOGGER.info("UPDATE MAX_DOC_SPLIT for TASK_ID=" + task_id + "; MAX_DOC_SPLIT=" + max_doc_split);
 		try {

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,7 @@ public class NewJobController {
 	    		+ "				Valgt fil:<br>"
 	    		+ "				<input type='file' name='file' style='width: 100%;' class='skjemaelement__input' /><br> <br>"
 	    		+ "	    		<input type='submit' name='submit' value='Last opp fil' class='knapp'  /> "
-	    		+ "				<input type='reset' name='cancel' value='Anuller' class='knapp knapp--fare' onclick=\"javascript:window.location='/';\"  />"
+	    		+ "				<input type='reset' name='cancel' value='Avbryt' class='knapp knapp--fare' onclick=\"javascript:window.location='/';\"  />"
 	    		+ "</form>";
 	    
 	    textul += " </div> ";
@@ -69,7 +70,9 @@ public class NewJobController {
 	    }
 	    textul += " <hr> <meta http-equiv='refresh' content='1; url=/'>";	    
 	    
-	    int records = checkInputFile(uuid);
+	    int records = checkInputFile(uuid); // I should replace this. I don't use this anymore.
+	    SimpleDateFormat timp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    //String timp = dateFormatNow.toString();
 	    
 	    if(records > 0) {
 	    	textul = "There is a file for this Task already.<br>Try again with another Task ID! <hr> <meta http-equiv='refresh' content='3; url=/nyjobb'>";	    	
@@ -78,8 +81,9 @@ public class NewJobController {
 	    	int checkTask_idInTASKtbl = checkTask(uuid);
 	    	if(checkTask_idInTASKtbl > 0) {
 	    		jdbcTemplate.update("INSERT INTO INPUT_FILE(TASK_UUID, FILE_TYPE, FILE_OBJECT) VALUES (?,?,?)", uuid, extension, fileContent);
+	    		jdbcTemplate.update("UPDATE TASK SET DATE_RECEIVED=SYSDATE, TIME_RECEIVED=?, MAX_DOC_SPLIT=1 WHERE TASK_ID=?", timp, uuid);
 	    	} else {
-	    		jdbcTemplate.update("INSERT INTO TASK(TASK_ID) VALUES (?)", uuid);
+	    		jdbcTemplate.update("INSERT INTO TASK(TASK_ID, DATE_RECEIVED, TIME_RECEIVED, MAX_DOC_SPLIT) VALUES (?, SYSDATE, ?, 1)", uuid, timp);
 	    		jdbcTemplate.update("INSERT INTO INPUT_FILE(TASK_UUID, FILE_TYPE, FILE_OBJECT) VALUES (?,?,?)", uuid, extension, fileContent);
 	    		LOGGER.info("New TASK_ID created. The new TASK_ID is " + uuid);
 	    	}

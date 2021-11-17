@@ -112,6 +112,7 @@ class Tasks extends Component {
             	<td>{task.task_id}</td>
             	<td>{task.status}</td>
                 <td>{(task.date_received !== null) ? task.date_received.substring(0, 10) : " - "}</td>
+                <td>{(task.date_received !== null) ? task.date_received.substring(11, 19) : " "}</td>
                 <td>{(task.deadline !== null) ? task.deadline.substring(0, 10) : "-" }</td>
                 <td id={'maxdocs' + task.task_id} onClick={() => { this.setState({ setEditMode: true, editTaskId: task.task_id }); }} onBlur={() => { this.setState({ setEditMode: false, editTaskId: null }); }}>{
                 	(this.state.setEditMode && this.state.editTaskId === task.task_id) ?
@@ -136,9 +137,10 @@ class Tasks extends Component {
 				            <tr>
 				                <th>Jobb<br />nummer</th>
 				                <th>Status</th>
-				                <th>Date received</th>
+				                <th>Jobb<br />mottatt</th>
+				                <th>Jobb mottatt<br />tidspunkt</th>
 				                <th>Utsendelsesfrist</th>
-				                <th>Max doc split</th>
+				                <th>Antall dokumenter<br />pr kjøring</th>
 				                <th>Antall<br />dokumenter<br />i jobb</th>
 				                <th>Dokumenter<br />distribuert</th>
 				                <th>Expire<br />date</th>
@@ -176,7 +178,7 @@ class Tasks extends Component {
                 <td>{doc.field8}</td>
                 <td>{doc.field9}</td>                
                 <td>{doc.country}</td>
-                <td>{doc.DISTRIBUERJOURNALPOST_ID}</td>
+                <td>{doc.distribuerjournalpost_id}</td>
                 <td>{doc.person_id}</td>
                 <td>File</td>
             </tr>
@@ -215,12 +217,6 @@ class Tasks extends Component {
 				    </table>
     	);
     	
-    	const oppdatterStatus = (
-    			<div className="central4button">
-    				<Knapp mini onClick={() => { this.getConsole(); }}>Oppdater status info</Knapp>
-    			</div>
-    	);
-	
     
         return (
             <div>
@@ -230,7 +226,6 @@ class Tasks extends Component {
 	            	<h2>{h2}</h2>
 	            	<hr />
 	            	{showDocs ? theWholeDocTable : theWholeTaskTable}
-	            	{showDocs ? oppdatterStatus : null}
 	            </Container>
             </div>
         );
