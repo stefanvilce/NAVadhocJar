@@ -109,21 +109,22 @@ class Tasks extends Component {
     	
     	var tasksList = tasks.map(task => {
             return <tr key={task.task_id} className={this.state.selectedRow === task.task_id ? "rowSelected" : "linje" } onClick={() => { this.getTaskId(task.task_id); this.changeColor(task.task_id); }}>
-            	<td>{task.task_id}</td>
-            	<td>{task.status}</td>
+            	<td className="alignRight">{task.task_id}</td>
+            	<td className="alignRight">{task.status}</td>
                 <td>{(task.date_received !== null) ? task.date_received.substring(0, 10) : " - "}</td>
                 <td>{(task.date_received !== null) ? task.date_received.substring(11, 19) : " "}</td>
                 <td>{(task.deadline !== null) ? task.deadline.substring(0, 10) : "-" }</td>
-                <td id={'maxdocs' + task.task_id} onClick={() => { this.setState({ setEditMode: true, editTaskId: task.task_id }); }} onBlur={() => { this.setState({ setEditMode: false, editTaskId: null }); }}>{
+                <td id={'maxdocs' + task.task_id} onClick={() => { this.setState({ setEditMode: true, editTaskId: task.task_id }); }} onBlur={() => { this.setState({ setEditMode: false, editTaskId: null }); }} className="editable alignRight">
+                	{
                 	(this.state.setEditMode && this.state.editTaskId === task.task_id) ?
-                			( <input id={'maxdocsInput' + task.task_id} className="inputMaxDocsSplit" size="4" defaultValue={task.max_doc_split} onClick={() => console.log('Teste')} onKeyPress={this.handleKeyPress}  /> ) : 
+                			( <input id={'maxdocsInput' + task.task_id} className="inputMaxDocsSplit" size="4" defaultValue={task.max_doc_split} onKeyPress={this.handleKeyPress}  /> ) : 
                 					(
                 					task.max_doc_split
                 					)
                 	}
                 </td>
-                <td>{task.docs_in_job}</td>
-                <td>{task.docs_distributed}</td>
+                <td className="alignRight">{task.docs_in_job}</td>
+                <td className="alignRight">{task.docs_distributed}</td>
                 <td>{(task.expire_date !== null) ? task.expire_date.substring(0, 10) : " - "}</td>
                 <td>{task.doc_format}</td>
                 <td>{task.csserver_id}</td>

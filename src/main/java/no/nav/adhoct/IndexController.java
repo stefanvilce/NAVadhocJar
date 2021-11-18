@@ -87,7 +87,7 @@ public class IndexController {
 	    			+ "			<td style='border: 1px solid #B8B8B8; padding: 2px; font-size: 10px;'>" + row.getTask_uuid() + "</td>"
 	    			+ "			<td style='border: 1px solid #B8B8B8; padding: 2px; font-size: 10px;'>" + row.getJournal_id() + "</td>"
 	    			+ "			<td style='border: 1px solid #B8B8B8; padding: 2px; font-size: 10px;'>" + row.getStatus() + "</td>"
-	    			+ "			<td style='border: 1px solid #B8B8B8; padding: 2px; font-size: 10px;'>" + row.getDoc_name() + "</td>"
+	    			+ "			<td style='border: 1px solid #B8B8B8; padding: 2px; font-size: 10px;'>" + row.getName() + "</td>"
 	    			+ "			<td style='border: 1px solid #B8B8B8; padding: 2px; font-size: 10px;'>" + row.getAddress1() + "" + row.getAddress2() + "</td>"
 	    			+ "			<td style='border: 1px solid #B8B8B8; padding: 2px; font-size: 10px;'>" + row.getZip() + "</td>"
 	    			+ "			<td style='border: 1px solid #B8B8B8; padding: 2px; font-size: 10px;'>" + row.getCity() + "</td>"

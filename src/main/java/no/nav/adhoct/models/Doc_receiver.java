@@ -12,7 +12,7 @@ public class Doc_receiver {
     private String task_uuid;
     private String journal_id;
     private String status;
-    private String doc_name;
+    private String name;
     private String address1;
     private String address2;
     private String address3;
@@ -31,21 +31,23 @@ public class Doc_receiver {
     private String distribuerjournalpost_id;
     private String person_id;
     private String json_file;
+    private String created_date;
+    private String updated_date;
     
     public Doc_receiver(){
 
     }
 
-    public Doc_receiver(Integer doc_uuid, String task_uuid, String journal_id, String status, String doc_name, 
+    public Doc_receiver(Integer doc_uuid, String task_uuid, String journal_id, String status, String name, 
     		String address1, String address2, String address3, String zip, String city, 
     		String field1, String field2, String field3, String field4, String field5, String field6, String field7, String field8, String field9,
-    		String country, String distribuerjournalpost_id, String person_id, String json_file
+    		String country, String distribuerjournalpost_id, String person_id, String json_file, String created_date, String updated_date
     		) {
     	this.doc_uuid = doc_uuid;
     	this.task_uuid = task_uuid;
         this.journal_id = journal_id;
         this.status = status;
-        this.doc_name = doc_name;
+        this.name = name;
         this.address1 = address1;
         this.address2 = address2;
         this.address3 = address3;
@@ -60,10 +62,9 @@ public class Doc_receiver {
         this.field7 = field7;
         this.field8 = field8;
         this.field9 = field9;
-        this.country = country;        
-
-         
-        
+        this.country = country;
+        this.created_date = created_date;
+        this.updated_date = updated_date;
     }
 
 	public Integer getDoc_uuid() {
@@ -98,12 +99,12 @@ public class Doc_receiver {
 		this.status = status;
 	}
 
-	public String getDoc_name() {
-		return doc_name;
+	public String getName() {
+		return name;
 	}
 
-	public void setDoc_name(String doc_name) {
-		this.doc_name = doc_name;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getAddress1() {
@@ -248,6 +249,22 @@ public class Doc_receiver {
 
 	public void setJson_file(String json_file) {
 		this.json_file = json_file;
+	}
+	
+	public void setCreated_date(String created_date) {
+		this.created_date = created_date;
+	}
+	
+	public String getCreated_date() {
+		return created_date;
+	}
+	
+	public void setUpdated_date(String updated_date) {
+		this.updated_date = updated_date;
+	}
+	
+	public String getUpdated_date() {
+		return updated_date;
 	}
 
     

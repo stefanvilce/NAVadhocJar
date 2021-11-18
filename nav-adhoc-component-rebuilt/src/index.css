@@ -4462,7 +4462,16 @@ table.tabell td {
 }
 .central4button { text-align: center; padding: 60px; }
 .inputMaxDocsSplit { padding: 3px; width: 45px; font-size: 1.25em; border-radius: 2px; border: 1px solid #989898;  }
+.editable { background-color: #FFFF97; }
+.rowSelected td.editable { background-color: #EDEDB3; }
+td.alignRight { text-align: right; }
 
+.wrappingform { margin: 0 auto; text-align: center; } 
+.wrappingform form { width: 400px; padding: 30px;  margin: 50px auto; border: 1px solid #CDCDCD; background-color: #F1F8FD; text-align: left; border-radius:5px; }
+.wrappingform fieldset { padding: 15px; border: none; }
+.wrappingform fieldset label { padding: 0; }
+.wrappingform fieldset label p { color: #878787; font-size: 0.67em; padding: 0; margin-bottom: 2px; }
+.wrappingform fieldset label input[type=text] { border: 1px solid #989898; padding: 5px; width: 100%; font-size: 0.9em; color: #545454; }
 
 .spinnerProcessingDoc {
 	text-align: center;
