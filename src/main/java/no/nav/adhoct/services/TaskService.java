@@ -25,7 +25,7 @@ public class TaskService {
 	
 	
 	public String update(String task_id, int max_doc_split) {
-		jdbcTemplate.update("UPDATE TASK SET MAX_DOC_SPLIT=? WHERE TASK_ID=?", max_doc_split, task_id);
+		jdbcTemplate.update("UPDATE TASK SET MAX_DOC_SPLIT=? WHERE TASK_UUID=?", max_doc_split, task_id);
 		return "OK";
     }
 	

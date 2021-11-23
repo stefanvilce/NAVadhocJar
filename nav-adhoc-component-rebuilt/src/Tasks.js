@@ -85,7 +85,7 @@ class Tasks extends Component {
     		  method: 'POST',
     		  redirect: 'follow'
     		};
-    		fetch("/task/update?task_id="+elId+"&max_doc_split="+inputValue, requestOptions)
+    		fetch("/task/update?task_uuid="+elId+"&max_doc_split="+inputValue, requestOptions)
     		  .then(response => response.text())
     		  .then(result => console.log(result))
     		  .catch(error => console.log('error', error));
@@ -108,16 +108,16 @@ class Tasks extends Component {
         */
     	
     	var tasksList = tasks.map(task => {
-            return <tr key={task.task_id} className={this.state.selectedRow === task.task_id ? "rowSelected" : "linje" } onClick={() => { this.getTaskId(task.task_id); this.changeColor(task.task_id); }}>
-            	<td className="alignRight">{task.task_id}</td>
+            return <tr key={task.task_uuid} className={this.state.selectedRow === task.task_uuid ? "rowSelected" : "linje" } onClick={() => { this.getTaskId(task.task_uuid); this.changeColor(task.task_uuid); }}>
+            	<td className="alignRight">{task.task_uuid}</td>
             	<td className="alignRight">{task.status}</td>
                 <td>{(task.date_received !== null) ? task.date_received.substring(0, 10) : " - "}</td>
                 <td>{(task.date_received !== null) ? task.date_received.substring(11, 19) : " "}</td>
                 <td>{(task.deadline !== null) ? task.deadline.substring(0, 10) : "-" }</td>
-                <td id={'maxdocs' + task.task_id} onClick={() => { this.setState({ setEditMode: true, editTaskId: task.task_id }); }} onBlur={() => { this.setState({ setEditMode: false, editTaskId: null }); }} className="editable alignRight">
+                <td id={'maxdocs' + task.task_uuid} onClick={() => { this.setState({ setEditMode: true, editTaskId: task.task_uuid }); }} onBlur={() => { this.setState({ setEditMode: false, editTaskId: null }); }} className="editable alignRight">
                 	{
-                	(this.state.setEditMode && this.state.editTaskId === task.task_id) ?
-                			( <input id={'maxdocsInput' + task.task_id} className="inputMaxDocsSplit" size="4" defaultValue={task.max_doc_split} onKeyPress={this.handleKeyPress}  /> ) : 
+                	(this.state.setEditMode && this.state.editTaskId === task.task_uuid) ?
+                			( <input id={'maxdocsInput' + task.task_uuid} className="inputMaxDocsSplit" size="4" defaultValue={task.max_doc_split} onKeyPress={this.handleKeyPress}  /> ) : 
                 					(
                 					task.max_doc_split
                 					)

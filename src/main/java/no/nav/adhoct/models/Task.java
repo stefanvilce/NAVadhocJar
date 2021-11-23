@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 public class Task {    
 
   //@Column(name="TASK_UUID")
-  private String task_id;
+  private String task_uuid;
   private String status;
   private String requester;
   private String date_received;
@@ -28,11 +28,11 @@ public class Task {
 
   }
 
-  public Task(String task_id, String status, String requester, String date_received, String deadline, Integer max_doc_split,
+  public Task(String task_uuid, String status, String requester, String date_received, String deadline, Integer max_doc_split,
   			 Integer docs_in_job, Integer docs_distributed, String expire_date, String doc_format, String csserver_id, byte[] preview_doc, 
   			 String archive_theme, Integer archive_unit, String document_title) 
   {
-      this.task_id = task_id;
+      this.task_uuid = task_uuid;
       this.status = status;
       this.requester = requester;
       this.date_received = date_received;
@@ -49,12 +49,12 @@ public class Task {
       this.document_title = document_title;
   }
 
-  public String getTask_id() {
-		return task_id;
+  public String getTask_uuid() {
+		return task_uuid;
 	}
 
-	public void setTask_id(String task_id) {
-		this.task_id = task_id;
+	public void setTask_uuid(String task_uuid) {
+		this.task_uuid = task_uuid;
 	}
 
 	public String getStatus() {

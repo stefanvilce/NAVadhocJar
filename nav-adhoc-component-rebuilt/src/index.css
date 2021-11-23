@@ -4462,16 +4462,79 @@ table.tabell td {
 }
 .central4button { text-align: center; padding: 60px; }
 .inputMaxDocsSplit { padding: 3px; width: 45px; font-size: 1.25em; border-radius: 2px; border: 1px solid #989898;  }
-.editable { background-color: #FFFF97; }
+.editable { background-color: #FFFFFF; }
 .rowSelected td.editable { background-color: #EDEDB3; }
 td.alignRight { text-align: right; }
 
 .wrappingform { margin: 0 auto; text-align: center; } 
-.wrappingform form { width: 400px; padding: 30px;  margin: 50px auto; border: 1px solid #CDCDCD; background-color: #F1F8FD; text-align: left; border-radius:5px; }
+.wrappingform form { width: 450px; padding: 30px;  margin: 50px auto; border: 1px solid #CDCDCD; background-color: #F1F8FD; text-align: left; border-radius:5px; }
 .wrappingform fieldset { padding: 15px; border: none; }
 .wrappingform fieldset label { padding: 0; }
 .wrappingform fieldset label p { color: #878787; font-size: 0.67em; padding: 0; margin-bottom: 2px; }
 .wrappingform fieldset label input[type=text] { border: 1px solid #989898; padding: 5px; width: 100%; font-size: 0.9em; color: #545454; }
+
+/*
+.knapp {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-family: Source Sans Pro,Arial,sans-serif;
+    font-size: 1em;
+    white-space: nowrap;
+    border-radius: .125em;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    letter-spacing: .0625em;
+    line-height: 1.375rem;
+    text-decoration: none;
+    background-color: #fff;
+    padding: calc(.475rem - 1px) 2.5rem calc(.525rem - 1px);
+    min-height: 2.5rem;
+    vertical-align: middle;
+    border: 2px solid #0067c5;
+    color: #0067c5;	
+}
+
+.knapp--fare{
+	color: #fff;
+    border-color: #ba3a26;
+    background-color: #ba3a26;
+    position: relative;
+    border-width: 1px;
+}
+
+.linkknapp {
+	align-items: center;
+	justify-content: center;
+	font-weight: 600;
+	font-family: Source Sans Pro,Arial,sans-serif;
+	font-size: 1em;
+	white-space: nowrap;
+	border-radius: .125em;
+	cursor: pointer;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	letter-spacing: .0625em;
+	line-height: 1.375rem;
+	text-decoration: none;
+	background-color: #fff;
+	padding: calc(.475rem - 1px) 2.5rem calc(.525rem - 1px);
+	min-height: 2.5rem;
+	vertical-align: middle;
+	border: 2px solid #0067c5;
+	color: #0067c5;
+	text-decoration: none;	
+}*/
+
+#cancelbutton {
+	margin-left: 15px; margin-top: 3px; 
+	box-shadow: none;
+}
+
 
 .spinnerProcessingDoc {
 	text-align: center;

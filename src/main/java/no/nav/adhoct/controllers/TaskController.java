@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import no.nav.adhoct.services.TaskService;
-import no.nav.adhoct.NewJobController;
 import no.nav.adhoct.models.*;
 
 @Controller
@@ -47,11 +46,12 @@ public class TaskController {
 	
 	
 	@PostMapping("/update")
-	public @ResponseBody ResponseEntity<String> update(@RequestParam(name = "task_id") String task_id, @RequestParam(name = "max_doc_split") int max_doc_split) {	
-		String jsonString = "{ \"status\": \"success\", \"data\":{\"task_id\":" + task_id + "}}";
-		LOGGER.info("UPDATE MAX_DOC_SPLIT for TASK_ID=" + task_id + "; MAX_DOC_SPLIT=" + max_doc_split);
+	public @ResponseBody ResponseEntity<String> update(@RequestParam(name = "task_uuid") String task_uuid, @RequestParam(name = "max_doc_split") int max_doc_split) {	
+		String jsonString = "{ \"status\": \"success\", \"data\":{\"task_uuid\":" + task_uuid + "}}";
+		LOGGER.info("UPDATE MAX_DOC_SPLIT for TASK_UUID=" + task_uuid + "; MAX_DOC_SPLIT=" + max_doc_split);
 		try {
-			String rez = service.update(task_id, max_doc_split);
+			String rez = service.update(task_uuid, max_doc_split);
+			LOGGER.info("UPDATING task max_doc_split ... " + rez);
 			JSONObject jsonObject = new JSONObject(jsonString);
             ResponseEntity<String> re = new ResponseEntity<String>(jsonObject.toString(), HttpStatus.OK);
             return re;

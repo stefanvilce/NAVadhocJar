@@ -2,10 +2,12 @@ package no.nav.adhoct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -81,17 +83,57 @@ public class NewJobController {
 	    	int checkTask_idInTASKtbl = checkTask(uuid);
 	    	if(checkTask_idInTASKtbl > 0) {
 	    		jdbcTemplate.update("INSERT INTO INPUT_FILE(TASK_UUID, FILE_TYPE, FILE_OBJECT) VALUES (?,?,?)", uuid, extension, fileContent);
-	    		jdbcTemplate.update("UPDATE TASK SET DATE_RECEIVED=SYSDATE, MAX_DOC_SPLIT=1 WHERE TASK_ID=?", uuid);
+	    		jdbcTemplate.update("UPDATE TASK SET DATE_RECEIVED=SYSDATE, MAX_DOC_SPLIT=1 WHERE TASK_UUID=?", uuid);
 	    	} else {
-	    		jdbcTemplate.update("INSERT INTO TASK(TASK_ID, DATE_RECEIVED, MAX_DOC_SPLIT) VALUES (?, SYSDATE, ?, 1)", uuid);
+	    		jdbcTemplate.update("INSERT INTO TASK(TASK_UUID, DATE_RECEIVED, MAX_DOC_SPLIT) VALUES (?, SYSDATE, 1)", uuid);
 	    		jdbcTemplate.update("INSERT INTO INPUT_FILE(TASK_UUID, FILE_TYPE, FILE_OBJECT) VALUES (?,?,?)", uuid, extension, fileContent);
-	    		LOGGER.info("New TASK_ID created. The new TASK_ID is " + uuid);
+	    		LOGGER.info("New TASK_UUID created. The new TASK_ID is " + uuid);
 	    	}
 	    }
 	    
 	    model.addAttribute("content", textul);
 		return "index";
 	}
+	
+	
+	@PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> uploadFile(@RequestParam("uuid") String uuid, @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+        String filename = "";
+	    String extension = "";
+        byte[] fileContent = null;
+	    if(file != null) {
+	    	filename = file.getOriginalFilename();
+	    	String[] getExtension = filename.split("\\.");
+	    	extension = getExtension[getExtension.length - 1];
+	    	fileContent = file.getBytes();
+	    }
+	    
+	    Integer uuidInt = Integer.parseInt(uuid);
+	    int records = 0;
+	    if(uuidInt > 0) {
+	    	records = checkInputFile(uuid);
+	    } else {
+	    	//create new UUID in TASK table if there is no TASK there 
+	    	Integer newUUID = findMaxPlusOneUUIDinTask();
+	    	uuid = newUUID.toString();
+	    }
+	    if(records > 0) {
+	    	LOGGER.info("There is a file for this Task already. Try again with another Task ID!");
+	    } else {
+	    	LOGGER.info("The new job is saved.");
+	    	int checkTask_idInTASKtbl = checkTask(uuid);
+	    	if(checkTask_idInTASKtbl > 0) {
+	    		jdbcTemplate.update("INSERT INTO INPUT_FILE(TASK_UUID, FILE_TYPE, FILE_OBJECT) VALUES (?,?,?)", uuid, extension, fileContent);
+	    		jdbcTemplate.update("UPDATE TASK SET DATE_RECEIVED=SYSDATE, MAX_DOC_SPLIT=1 WHERE TASK_UUID=?", uuid);
+	    	} else {
+	    		jdbcTemplate.update("INSERT INTO TASK(TASK_UUID, DATE_RECEIVED, MAX_DOC_SPLIT) VALUES (?, SYSDATE, 1)", uuid);
+	    		jdbcTemplate.update("INSERT INTO INPUT_FILE(TASK_UUID, FILE_TYPE, FILE_OBJECT) VALUES (?,?,?)", uuid, extension, fileContent);
+	    		LOGGER.info("New TASK_UUID created. The new TASK_ID is " + uuid);
+	    	}
+	    	LOGGER.info(String.format("File name '%s' uploaded successfully.", file.getOriginalFilename()));
+	    }
+        return ResponseEntity.ok().build();
+    }
 	
 	
 	public Integer checkInputFile(String uuid) {
@@ -108,16 +150,27 @@ public class NewJobController {
 	
 	
 	public Integer checkTask(String uuid) {
-		String sql = "SELECT COUNT(*) FROM TASK WHERE TASK_ID='" + uuid + "'";
+		String sql = "SELECT COUNT(*) FROM TASK WHERE TASK_UUID='" + uuid + "'";
 		List<Integer> i = jdbcTemplate.queryForList(sql, Integer.class);
 		if (i.size() == 0) { 
 			return 0; 
 			} 
 		else  {		
-			LOGGER.info("We have found another  " + i.get(0) + " record(s) with the same TASK_ID in the TASK table.");
+			LOGGER.info("We have found another  " + i.get(0) + " record(s) with the same TASK_UUID in the TASK table.");
 			return i.get(0);
 		}
 	}
 	
+	
+	public Integer findMaxPlusOneUUIDinTask() {
+		String sql = "SELECT MAX(uuid) FROM TASK";
+		List<Integer> i = jdbcTemplate.queryForList(sql, Integer.class);
+		if (i.size() == 0) { 
+			return 0; 
+		} else  {		
+			LOGGER.info("New UUID in TASK is  " + i.get(0));
+			return 1 + i.get(0);
+		}
+	}
 	
 }
