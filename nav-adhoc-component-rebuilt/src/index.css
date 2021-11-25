@@ -3812,6 +3812,7 @@ GRID
   .col-sm-2 {
     width: 205px;
   }
+  .col-sm-2bis{ width: 255px; }
   .col-sm-1 {
     width: 8.33333333%;
   }
@@ -4385,8 +4386,8 @@ li.nav-empower-metadata-list {
   margin-bottom: 10px;
 }
 
-.stfRight { float: left; width: calc(100%-300px); position: absolute;
-  top: 2px; left: 260px;
+.stfRight { float: left; width: calc(100%-310px); position: absolute;
+  top: 2px; left: 280px;
   overflow-x: scroll;
   overflow-y: show;
   white-space: nowrap;

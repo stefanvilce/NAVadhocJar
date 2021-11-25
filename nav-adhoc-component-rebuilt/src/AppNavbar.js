@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom';
 //import { Hovedknapp, Fareknapp } from 'nav-frontend-knapper';
 import { Container, Row, Column } from "nav-frontend-grid";
 import { Panel } from 'nav-frontend-paneler';
-import { Hovedknapp } from 'nav-frontend-knapper';
+import { Hovedknapp, Fareknapp } from 'nav-frontend-knapper';
 
 export default class AppNavbar extends Component {
     constructor(props) {
@@ -55,27 +55,40 @@ export default class AppNavbar extends Component {
     	
     	var getConsole = this.props.getConsole;
     	var reloadTasks = this.props.reloadTasks;
+    	var showSelectFirstFormfc = this.props.showSelectFirstFormfc;
+    	var showSelectCSVfc = this.props.showSelectCSVfc;
+    	var showSelectWORDfc = this.props.showSelectWORDfc;
+    	    	
     	
         return <><Panel><Container className="nav-empower-frontend-container">
 					        <Row className="nav-empower-frontend-row">
-						        <Column className="nav-empower-frontend-column-buttons col-sm-2">
-						            <ul className="nav-empower-button-list">
-						            	<li><Link to="/"><Hovedknapp className="nav-empower-button">Startside</Hovedknapp></Link></li>
-						            	<li><Link to="/nyjobb"><Hovedknapp className="nav-empower-button">Ny jobb</Hovedknapp></Link></li>
-						            	
-						            	{this.state.link == "tasks"
-						                    ? 
-						                    <li><Hovedknapp className="nav-empower-button" onClick={() => { reloadTasks(); this.knappBrevmottaker(-1); }}>Jobboversikt</Hovedknapp></li>
-						                	: 
-						                	<li><Link to="/tasks"><Hovedknapp className="nav-empower-button">Jobboversikt</Hovedknapp></Link></li>
-						                }
-						            	{this.state.link == "tasks"
-						                    ? 
-						                    <li><Hovedknapp className="nav-empower-button" onClick={() => { getConsole(); this.knappBrevmottaker(1); }}>{this.state.knappBrevmottakerliste}</Hovedknapp></li>
-						                	: null
-						                }
-						            					            	
-						            </ul>
+						        <Column className="nav-empower-frontend-column-buttons col-sm-2bis">
+						        {this.state.link == "nyjobb" 
+						        	?
+							        	<ul className="nav-empower-button-list">
+							            	<li><Hovedknapp className="nav-empower-button" onClick={() => { showSelectFirstFormfc(); }}>Registrer jobb informasjon</Hovedknapp></li>
+							            	<li><Hovedknapp className="nav-empower-button" onClick={() => { showSelectCSVfc(); }}>Last inn mottakersliste</Hovedknapp></li>
+							            	<li><Hovedknapp className="nav-empower-button" onClick={() => { showSelectWORDfc(); }}>Last inn brevmal</Hovedknapp></li>
+							            	<li><Hovedknapp className="nav-empower-button" onClick={() => { alert(" . . . pending . . . "); }}>Lagre ny jobb</Hovedknapp></li>
+							            	<li><Link to="/"><Fareknapp className="nav-empower-button knapp--fare">Avbryt</Fareknapp></Link></li>					            	
+							            </ul>
+						            :
+							            <ul className="nav-empower-button-list">
+							            	<li><Link to="/"><Hovedknapp className="nav-empower-button">Startside</Hovedknapp></Link></li>
+							            	<li><Link to="/nyjobb"><Hovedknapp className="nav-empower-button">Ny jobb</Hovedknapp></Link></li>						            	
+							            	{this.state.link == "tasks"
+							                    ? 
+							                    <li><Hovedknapp className="nav-empower-button" onClick={() => { reloadTasks(); this.knappBrevmottaker(-1); }}>Jobboversikt</Hovedknapp></li>
+							                	: 
+							                	<li><Link to="/tasks"><Hovedknapp className="nav-empower-button">Jobboversikt</Hovedknapp></Link></li>
+							                }
+							            	{this.state.link == "tasks"
+							                    ? 
+							                    <li><Hovedknapp className="nav-empower-button" onClick={() => { getConsole(); this.knappBrevmottaker(1); }}>{this.state.knappBrevmottakerliste}</Hovedknapp></li>
+							                	: null
+							                }						            					            	
+							            </ul>
+						        }   
 						        </Column>
 						    </Row>    
 				    	</Container>

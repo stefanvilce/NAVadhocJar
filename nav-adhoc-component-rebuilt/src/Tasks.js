@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
 import AppNavbar from './AppNavbar';
-import { Button, Container } from 'reactstrap';
-import { Knapp } from 'nav-frontend-knapper';
+import { Container } from 'reactstrap';
+//import { Knapp } from 'nav-frontend-knapper';
 import { withRouter } from 'react-router-dom';
 import "nav-frontend-tabell-style";
 

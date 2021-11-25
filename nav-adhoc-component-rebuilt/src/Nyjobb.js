@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import AppNavbar from './AppNavbar';
-import { Button, Container, Form } from 'reactstrap';
+import { Container, Form } from 'reactstrap';
 import { withRouter } from 'react-router-dom';
 import { Input, Label } from 'nav-frontend-skjema';
 
@@ -11,27 +11,54 @@ class Nyjobb extends Component {
 	constructor(props) {
         super(props);
         this.addTheTitle = this.addTheTitle.bind(this);
+        this.showSelectFirstFormfc = this.showSelectFirstFormfc.bind(this);
+        this.showSelectCSVfc = this.showSelectCSVfc.bind(this);
+        this.showSelectWORDfc = this.showSelectWORDfc.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.onFileChangeHandler = this.onFileChangeHandler.bind(this);
+        this.onFileCSVChangeHandler = this.onFileCSVChangeHandler.bind(this);
         this.state = {
         		title: "Ny jobb, lagre fil",
         		job: 0,
         		uuid: "",
-        		selectedFile: null
+        		selectedFile: null,
+        		selectedFileCSV: null,
+        		showFirstForm: true,
+        		showSelectCSV: false,
+        		showSelectWORD: false
         };
     }
-	
-	
+		
 
     addTheTitle(){
     		return "ADHOC :: Ny jobb";
     }    
     
+    
+    showSelectFirstFormfc(){
+    	this.setState({showSelectCSV: false, showSelectWORD: false, showFirstForm: true});
+    }
+    
+    showSelectCSVfc(){
+       	this.setState({showSelectCSV: true, showSelectWORD: false, showFirstForm: false});
+    }
+    
+    showSelectWORDfc(){
+    	this.setState({showSelectCSV: false, showSelectWORD: true, showFirstForm: false});
+    }
+    
+    
     onFileChangeHandler = (e) => {
-        //e.preventDefault();
         this.setState({
             selectedFile: e.target.files[0]
+        });
+    };
+    
+    
+    onFileCSVChangeHandler = (e) => {
+        this.setState({
+            selectedFileCSV: e.target.files[0]
         });
     };
     
@@ -70,30 +97,66 @@ class Nyjobb extends Component {
     	//Here I have to get further with the Form in REACT format. For the moment I keep this redirect to the Form in java format.  
     	
         //const title = <h2>{'Importer mottaker fil'}</h2>;
-        const divin = <div>{' '}</div>;
+        const divin = <Form onSubmit={this.handleSubmit}>				            
+					        <fieldset>
+					        <Label htmlFor="UUID">UUID:</Label>
+					          <Input name="UUID" id="UUID" type="text" value={this.state.uuid} onChange={this.handleChange} />
+					      </fieldset>
+					      <fieldset>
+					          <Label htmlFor="fil">Valgt fil:</Label>
+					          <Input name="file" id="file" type="file"  onChange={this.onFileChangeHandler} />				               
+					      </fieldset>
+					      <fieldset>
+					      		<input type='submit' name='submit' value='Last opp fil' className='knapp' />
+					      		<input type='reset' name='cancel' value='Avbryt'   className='knapp knapp--fare' id="cancelbutton" onClick="javascript:window.location='/';"  />				            		
+					      </fieldset>
+					  </Form>;
        
         return (<React.Fragment>
-		            <AppNavbar/>
+		            <AppNavbar showSelectCSVfc = {this.showSelectCSVfc} showSelectWORDfc = {this.showSelectWORDfc} showSelectFirstFormfc = {this.showSelectFirstFormfc} />
 		            <Container className="stfRight">
 			            <h1>AdHoc App</h1>
 			        	<h2>{title}</h2>
 			        	<hr />
 			        	<div className="wrappingform">
-				          <Form onSubmit={this.handleSubmit}>
-				            <fieldset>
-				              <Label htmlFor="UUID">UUID:</Label>
-				                <Input name="UUID" id="UUID" type="text" value={this.state.uuid} onChange={this.handleChange} />
-				            </fieldset>
-				            <fieldset>
-				                <Label htmlFor="fil">Valgt fil:</Label>
-				                <Input name="file" id="file" type="file"  onChange={this.onFileChangeHandler} />				               
-				            </fieldset>
-				            <fieldset>
-				            		<input type='submit' name='submit' value='Last opp fil' className='knapp' />
-				            		<input type='reset' name='cancel' value='Avbryt' className='knapp knapp--fare' id="cancelbutton" onClick="javascript:window.location='/';"  />				            		
-				            </fieldset>
-				            {divin}
-				          </Form>
+				        	<div style={ this.state.showFirstForm ? {display: "block"} : {display: "none"} }>
+						        <table>
+						        	<tr>
+						        		<td>
+							        		<Label htmlFor="brukerident">Bestiller:</Label>
+							        		<Input name="brukerident" id="brukerident" type="text" value={this.state.uuid} onChange={this.handleChange} />
+						        		</td>
+							        	<td>
+							        		<Label htmlFor="brevtittel">Brevtittel:</Label>
+							        		<Input name="brevtittel" id="brevtittel" type="text" />
+						        		</td>
+						        		<td>
+							        		<Label htmlFor="journal">Journalførende enhet:</Label>
+							        		<Input name="journal" id="journal" type="text" />
+						        		</td>
+							        	<td>
+							        		<Label htmlFor="arkivkode">Arkivkode:</Label>
+							        		<Input name="arkivkode" id="arkivkode" type="text" />
+						        		</td>
+						        	</tr>
+						        </table>
+					        </div>
+					        <div style={ this.state.showSelectCSV ? {display: "block"} : {display: "none"} }>
+					        	<Form>
+								    <fieldset>
+						                <Label htmlFor="filecsv">CSV fil:</Label>
+						                <Input name="filecsv" id="filecsv" type="file" accept=".csv, .xml"  onChange={this.onFileCSVChangeHandler} />				               
+						            </fieldset>
+					            </Form>
+					        </div>
+					        <div style={ this.state.showSelectWORD ? {display: "block"} : {display: "none"} }>
+					        	<Form>
+								    <fieldset>
+						                <Label htmlFor="filecsv">WORD / PDF fil:</Label>
+						                <Input name="fileword" id="fileword" type="file" accept=".png, .jpg, .jpeg, .doc, .docx"  onChange={this.onFileCSVChangeHandler} />				               
+						            </fieldset>
+					            </Form>
+					        </div>
 			          </div>
 		            </Container>
 		        </React.Fragment>
