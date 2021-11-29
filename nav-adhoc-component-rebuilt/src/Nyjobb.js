@@ -16,14 +16,18 @@ class Nyjobb extends Component {
         this.showSelectWORDfc = this.showSelectWORDfc.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.onFileChangeHandler = this.onFileChangeHandler.bind(this);
         this.onFileCSVChangeHandler = this.onFileCSVChangeHandler.bind(this);
+        this.onFileWORDChangeHandler = this.onFileWORDChangeHandler.bind(this);
         this.state = {
         		title: "Ny jobb, lagre fil",
         		job: 0,
-        		uuid: "",
-        		selectedFile: null,
+        		uuid: "0",
+        		requester: "",
+        		document_title: "",
+        		archive_unit: "0",
+        		archive_theme: "",        		
         		selectedFileCSV: null,
+        		selectedFileWORD: null,
         		showFirstForm: true,
         		showSelectCSV: false,
         		showSelectWORD: false
@@ -62,31 +66,46 @@ class Nyjobb extends Component {
         });
     };
     
+    onFileWORDChangeHandler = (e) => {
+        this.setState({
+            selectedFileWORD: e.target.files[0]
+        });
+    };
+    
     
     handleChange = (ev) => {
-    	this.setState({uuid: ev.target.value});
-    }
-
-
-    handleSubmit = (event) => {
-      event.preventDefault();
-      console.log("Par.1 " + this.state.uuid);
-      console.log("Par.2 " + this.state.selectedFile);
-      
-      const formData = new FormData();
-      formData.append('uuid', this.state.uuid);
-      formData.append('file', this.state.selectedFile); //this.fileInput.files[0],
-      fetch('/upload', {
-          method: 'post',
-          body: formData
-      }).then(res => {
-          if(res.ok) {
-              console.log(res.data);
-              alert("File uploaded successfully.")
-          }
-      });      
-    }
+    	this.setState({[ev.target.name]: ev.target.value});
+    }    
     
+    handleSubmit = () => {
+    	//event.preventDefault();
+        console.log("Par.1 " + this.state.uuid);
+        console.log("Par.2 " + this.state.requester);
+        console.log("Archive unit: " + this.state.archive_unit);
+        
+        const formData = new FormData();
+        formData.append('uuid', this.state.uuid);
+        formData.append('requester', this.state.requester);
+        formData.append('document_title', this.state.document_title);
+        formData.append('archive_unit', this.state.archive_unit);
+        formData.append('archive_theme', this.state.archive_theme);        
+        formData.append('file', this.state.selectedFileCSV);
+        formData.append('file2', this.state.selectedFileWORD);
+        fetch('/savenyjobb', {
+            method: 'post',
+            body: formData
+        }).then(res => {
+            if(res.ok) {
+                console.log(res.data);
+                alert("The data were sent and saved!")
+            } else {
+            	alert("Error! \nThe data cannot be sent!");            	
+            }
+        });  
+        
+        
+        
+    }
     
 	
     render() {
@@ -96,24 +115,8 @@ class Nyjobb extends Component {
     	const {title} = this.state;
     	//Here I have to get further with the Form in REACT format. For the moment I keep this redirect to the Form in java format.  
     	
-        //const title = <h2>{'Importer mottaker fil'}</h2>;
-        const divin = <Form onSubmit={this.handleSubmit}>				            
-					        <fieldset>
-					        <Label htmlFor="UUID">UUID:</Label>
-					          <Input name="UUID" id="UUID" type="text" value={this.state.uuid} onChange={this.handleChange} />
-					      </fieldset>
-					      <fieldset>
-					          <Label htmlFor="fil">Valgt fil:</Label>
-					          <Input name="file" id="file" type="file"  onChange={this.onFileChangeHandler} />				               
-					      </fieldset>
-					      <fieldset>
-					      		<input type='submit' name='submit' value='Last opp fil' className='knapp' />
-					      		<input type='reset' name='cancel' value='Avbryt'   className='knapp knapp--fare' id="cancelbutton" onClick="javascript:window.location='/';"  />				            		
-					      </fieldset>
-					  </Form>;
-       
         return (<React.Fragment>
-		            <AppNavbar showSelectCSVfc = {this.showSelectCSVfc} showSelectWORDfc = {this.showSelectWORDfc} showSelectFirstFormfc = {this.showSelectFirstFormfc} />
+		            <AppNavbar showSelectCSVfc = {this.showSelectCSVfc} showSelectWORDfc = {this.showSelectWORDfc} showSelectFirstFormfc = {this.showSelectFirstFormfc} handleSubmit = {this.handleSubmit} />
 		            <Container className="stfRight">
 			            <h1>AdHoc App</h1>
 			        	<h2>{title}</h2>
@@ -123,20 +126,21 @@ class Nyjobb extends Component {
 						        <table>
 						        	<tr>
 						        		<td>
-							        		<Label htmlFor="brukerident">Bestiller:</Label>
-							        		<Input name="brukerident" id="brukerident" type="text" value={this.state.uuid} onChange={this.handleChange} />
+						        			<input name="uuid" id="uuid" type="hidden" value={this.state.uuid} />
+							        		<Label htmlFor="requester">Bestiller:</Label>
+							        		<Input name="requester" id="requester" type="text" value={this.state.requester} onChange={this.handleChange} />
 						        		</td>
 							        	<td>
-							        		<Label htmlFor="brevtittel">Brevtittel:</Label>
-							        		<Input name="brevtittel" id="brevtittel" type="text" />
+							        		<Label htmlFor="document_title">Brevtittel:</Label>
+							        		<Input name="document_title" id="document_title" type="text"  value={this.state.document_title} onChange={this.handleChange}  />
 						        		</td>
 						        		<td>
-							        		<Label htmlFor="journal">Journalførende enhet:</Label>
-							        		<Input name="journal" id="journal" type="text" />
+							        		<Label htmlFor="archive_unit">Journalførende enhet:</Label>
+							        		<Input name="archive_unit" id="archive_unit" type="text"  value={this.state.archive_unit} onChange={this.handleChange}  />
 						        		</td>
 							        	<td>
-							        		<Label htmlFor="arkivkode">Arkivkode:</Label>
-							        		<Input name="arkivkode" id="arkivkode" type="text" />
+							        		<Label htmlFor="archive_theme">Tema:</Label>
+							        		<Input name="archive_theme" id="archive_theme" type="text"  value={this.state.archive_theme} onChange={this.handleChange}  />
 						        		</td>
 						        	</tr>
 						        </table>
@@ -145,15 +149,15 @@ class Nyjobb extends Component {
 					        	<Form>
 								    <fieldset>
 						                <Label htmlFor="filecsv">CSV fil:</Label>
-						                <Input name="filecsv" id="filecsv" type="file" accept=".csv, .xml"  onChange={this.onFileCSVChangeHandler} />				               
+						                <Input name="filecsv" id="filecsv" type="file" accept=".csv, .xml, .xls, .xlsx"  onChange={this.onFileCSVChangeHandler} />				               
 						            </fieldset>
 					            </Form>
 					        </div>
 					        <div style={ this.state.showSelectWORD ? {display: "block"} : {display: "none"} }>
 					        	<Form>
 								    <fieldset>
-						                <Label htmlFor="filecsv">WORD / PDF fil:</Label>
-						                <Input name="fileword" id="fileword" type="file" accept=".png, .jpg, .jpeg, .doc, .docx"  onChange={this.onFileCSVChangeHandler} />				               
+						                <Label htmlFor="fileword">WORD / PDF fil:</Label>
+						                <Input name="fileword" id="fileword" type="file" accept=".pdf, .doc, .docx, .rtf"  onChange={this.onFileWORDChangeHandler} />				               
 						            </fieldset>
 					            </Form>
 					        </div>

@@ -58,6 +58,7 @@ export default class AppNavbar extends Component {
     	var showSelectFirstFormfc = this.props.showSelectFirstFormfc;
     	var showSelectCSVfc = this.props.showSelectCSVfc;
     	var showSelectWORDfc = this.props.showSelectWORDfc;
+    	var handleSubmit = this.props.handleSubmit;
     	    	
     	
         return <><Panel><Container className="nav-empower-frontend-container">
@@ -69,7 +70,7 @@ export default class AppNavbar extends Component {
 							            	<li><Hovedknapp className="nav-empower-button" onClick={() => { showSelectFirstFormfc(); }}>Registrer jobb informasjon</Hovedknapp></li>
 							            	<li><Hovedknapp className="nav-empower-button" onClick={() => { showSelectCSVfc(); }}>Last inn mottakersliste</Hovedknapp></li>
 							            	<li><Hovedknapp className="nav-empower-button" onClick={() => { showSelectWORDfc(); }}>Last inn brevmal</Hovedknapp></li>
-							            	<li><Hovedknapp className="nav-empower-button" onClick={() => { alert(" . . . pending . . . "); }}>Lagre ny jobb</Hovedknapp></li>
+							            	<li><Hovedknapp className="nav-empower-button" onClick={() => { handleSubmit(); }}>Lagre ny jobb</Hovedknapp></li>
 							            	<li><Link to="/"><Fareknapp className="nav-empower-button knapp--fare">Avbryt</Fareknapp></Link></li>					            	
 							            </ul>
 						            :
