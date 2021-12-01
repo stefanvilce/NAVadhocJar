@@ -59,7 +59,8 @@ export default class AppNavbar extends Component {
     	var showSelectCSVfc = this.props.showSelectCSVfc;
     	var showSelectWORDfc = this.props.showSelectWORDfc;
     	var handleSubmit = this.props.handleSubmit;
-    	    	
+    	var disableKnapp = this.props.disableKnapp;
+    	    	    	
     	
         return <><Panel><Container className="nav-empower-frontend-container">
 					        <Row className="nav-empower-frontend-row">
@@ -70,9 +71,16 @@ export default class AppNavbar extends Component {
 							            	<li><Hovedknapp className="nav-empower-button" onClick={() => { showSelectFirstFormfc(); }}>Registrer jobb informasjon</Hovedknapp></li>
 							            	<li><Hovedknapp className="nav-empower-button" onClick={() => { showSelectCSVfc(); }}>Last inn mottakersliste</Hovedknapp></li>
 							            	<li><Hovedknapp className="nav-empower-button" onClick={() => { showSelectWORDfc(); }}>Last inn brevmal</Hovedknapp></li>
-							            	<li><Hovedknapp className="nav-empower-button" onClick={() => { handleSubmit(); }}>Lagre ny jobb</Hovedknapp></li>
+							            	<li>
+							            	{ disableKnapp ? 
+							            		 <Hovedknapp disabled className="nav-empower-button">Lagre ny jobb</Hovedknapp>
+							            		: 
+							            		 <Hovedknapp className="nav-empower-button" onClick={() => { handleSubmit(); }}>Lagre ny jobb</Hovedknapp>
+							            	}
+							            	</li>
+							            	
 							            	<li><Link to="/"><Fareknapp className="nav-empower-button knapp--fare">Avbryt</Fareknapp></Link></li>					            	
-							            </ul>
+							            </ul>							           
 						            :
 							            <ul className="nav-empower-button-list">
 							            	<li><Link to="/"><Hovedknapp className="nav-empower-button">Startside</Hovedknapp></Link></li>

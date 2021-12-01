@@ -11,26 +11,29 @@ class Nyjobb extends Component {
 	constructor(props) {
         super(props);
         this.addTheTitle = this.addTheTitle.bind(this);
-        this.showSelectFirstFormfc = this.showSelectFirstFormfc.bind(this);
         this.showSelectCSVfc = this.showSelectCSVfc.bind(this);
         this.showSelectWORDfc = this.showSelectWORDfc.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.onFileCSVChangeHandler = this.onFileCSVChangeHandler.bind(this);
         this.onFileWORDChangeHandler = this.onFileWORDChangeHandler.bind(this);
+        this.enableDisableKnappLagreJobb = this.enableDisableKnappLagreJobb.bind(this);
+        this.checkAllFields = this.checkAllFields.bind(this);
         this.state = {
         		title: "Ny jobb, lagre fil",
         		job: 0,
-        		uuid: "0",
+        		unikuuid: false,
+        		uuid: "",
         		requester: "",
         		document_title: "",
-        		archive_unit: "0",
+        		archive_unit: "",
         		archive_theme: "",        		
         		selectedFileCSV: null,
         		selectedFileWORD: null,
-        		showFirstForm: true,
         		showSelectCSV: false,
-        		showSelectWORD: false
+        		showSelectWORD: false,
+        		disabledKnappLagreJobb: true
+        		
         };
     }
 		
@@ -40,16 +43,50 @@ class Nyjobb extends Component {
     }    
     
     
-    showSelectFirstFormfc(){
-    	this.setState({showSelectCSV: false, showSelectWORD: false, showFirstForm: true});
-    }
-    
     showSelectCSVfc(){
-       	this.setState({showSelectCSV: true, showSelectWORD: false, showFirstForm: false});
+       	this.setState({showSelectCSV: true});
     }
     
     showSelectWORDfc(){
-    	this.setState({showSelectCSV: false, showSelectWORD: true, showFirstForm: false});
+    	this.setState({showSelectWORD: true});
+    }
+    
+    enableDisableKnappLagreJobb = (e) => {
+    	var v = e.target.value;
+    	if(v.length == 0){
+    		alert("You have to fill out this field!");
+    		this.setState({disabledKnappLagreJobb: true});
+    		this.setState({unikuuid: false});
+    	} else {
+    		console.log("UUID value: " + v);
+    		
+    		fetch('/api/checkuuid?uuid=' + v, {
+                method: 'GET'
+            }).then(response => response.text())
+            	.then(result => {
+            		console.info(result);
+	                if(result.ok) {
+	                    console.log(result.data);	                    
+	                    //alert("The data were sent and saved!")
+	                } else {
+	                	alert("Error! We don't receive data!");            	
+	                }
+            }).catch(error => console.log('error', error));  
+    		
+    		
+    		this.setState({unikuuid: true});
+    		if(this.checkAllFields()){
+    			this.setState({disabledKnappLagreJobb: false});
+    		}    		
+    	}
+    }
+    
+    checkAllFields(){
+    	//We have to check all the fields to see if these contain informations. These should not be empty
+    	if(this.state.unikuuid && this.state.requester.length > 0 && this.state.document_title.length > 0 && this.state.archive_unit.length > 0 && this.state.archive_theme.length > 0)
+    		return true 
+    	else 
+    		return false; 
     }
     
     
@@ -75,13 +112,16 @@ class Nyjobb extends Component {
     
     handleChange = (ev) => {
     	this.setState({[ev.target.name]: ev.target.value});
+    	if(this.checkAllFields()){	// activate the Lagre Ny Jobb button
+			this.setState({disabledKnappLagreJobb: false});
+		} else {
+			this.setState({disabledKnappLagreJobb: true});
+		}
     }    
     
     handleSubmit = () => {
     	//event.preventDefault();
-        console.log("Par.1 " + this.state.uuid);
-        console.log("Par.2 " + this.state.requester);
-        console.log("Archive unit: " + this.state.archive_unit);
+        
         
         const formData = new FormData();
         formData.append('uuid', this.state.uuid);
@@ -116,18 +156,21 @@ class Nyjobb extends Component {
     	//Here I have to get further with the Form in REACT format. For the moment I keep this redirect to the Form in java format.  
     	
         return (<React.Fragment>
-		            <AppNavbar showSelectCSVfc = {this.showSelectCSVfc} showSelectWORDfc = {this.showSelectWORDfc} showSelectFirstFormfc = {this.showSelectFirstFormfc} handleSubmit = {this.handleSubmit} />
+		            <AppNavbar showSelectCSVfc = {this.showSelectCSVfc} showSelectWORDfc = {this.showSelectWORDfc} handleSubmit = {this.handleSubmit} disableKnapp = {this.state.disabledKnappLagreJobb} />
 		            <Container className="stfRight">
 			            <h1>AdHoc App</h1>
 			        	<h2>{title}</h2>
 			        	<hr />
 			        	<div className="wrappingform">
-				        	<div style={ this.state.showFirstForm ? {display: "block"} : {display: "none"} }>
+				        	<div>
 						        <table>
 						        	<tr>
+							        	<td>
+						        			<Label htmlFor="uuid">Ordre nr.:</Label>
+							        		<Input name="uuid" id="uuid" type="text" value={this.state.uuid} onChange={this.handleChange} onBlur={this.enableDisableKnappLagreJobb} />
+						        		</td>
 						        		<td>
-						        			<input name="uuid" id="uuid" type="hidden" value={this.state.uuid} />
-							        		<Label htmlFor="requester">Bestiller:</Label>
+						        			<Label htmlFor="requester">Bestiller:</Label>
 							        		<Input name="requester" id="requester" type="text" value={this.state.requester} onChange={this.handleChange} />
 						        		</td>
 							        	<td>
@@ -145,21 +188,17 @@ class Nyjobb extends Component {
 						        	</tr>
 						        </table>
 					        </div>
-					        <div style={ this.state.showSelectCSV ? {display: "block"} : {display: "none"} }>
-					        	<Form>
-								    <fieldset>
+					        <div className="uploadfileinput" style={ this.state.showSelectCSV ? {display: "block"} : {display: "none"} }>
+					        	    <fieldset>
 						                <Label htmlFor="filecsv">CSV fil:</Label>
 						                <Input name="filecsv" id="filecsv" type="file" accept=".csv, .xml, .xls, .xlsx"  onChange={this.onFileCSVChangeHandler} />				               
 						            </fieldset>
-					            </Form>
 					        </div>
-					        <div style={ this.state.showSelectWORD ? {display: "block"} : {display: "none"} }>
-					        	<Form>
-								    <fieldset>
+					        <div className="uploadfileinput" style={ this.state.showSelectWORD ? {display: "block"} : {display: "none"} }>
+					        	    <fieldset>
 						                <Label htmlFor="fileword">WORD / PDF fil:</Label>
 						                <Input name="fileword" id="fileword" type="file" accept=".pdf, .doc, .docx, .rtf"  onChange={this.onFileWORDChangeHandler} />				               
 						            </fieldset>
-					            </Form>
 					        </div>
 			          </div>
 		            </Container>

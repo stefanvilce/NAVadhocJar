@@ -4474,6 +4474,10 @@ td.alignRight { text-align: right; }
 .wrappingform fieldset label p { color: #878787; font-size: 0.67em; padding: 0; margin-bottom: 2px; }
 .wrappingform fieldset label input[type=text] { border: 1px solid #989898; padding: 5px; width: 100%; font-size: 0.9em; color: #545454; }
 
+
+.uploadfileinput { width: 890px; margin: auto; text-align: left; }
+
+
 /*
 .knapp {
     display: inline-flex;

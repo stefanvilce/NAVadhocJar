@@ -225,6 +225,38 @@ public class NewJobController {
 	
 	
 	
+	@GetMapping("/api/checkuuid")
+	public ResponseEntity<?>  checkUUID(@RequestParam("uuid") String uuid) {
+		
+		int foundUUID = 0;		
+		if(uuid == null || uuid.length() == 0) {
+			foundUUID = 0;
+		} else {
+			foundUUID = findUUIDinTask(uuid);			
+		}		
+		String jsonResponse = "{ \"status\": \"success\", \n "
+				+ "\"data\": { \n"
+				+ "\"founduuid\": \"" + foundUUID + "\", \n "
+						+ "\"uuid\": \"" + uuid + "\" "
+						+ "\n} "
+						+ "\n}";
+	    try {
+            JSONObject jsonObject = new JSONObject(jsonResponse);
+            ResponseEntity<String> re = new ResponseEntity<String>(jsonObject.toString(), HttpStatus.OK);
+            return re;
+        } catch (JSONException ex) {
+            return new ResponseEntity<String>("Done", HttpStatus.NOT_FOUND);
+        }
+		
+	}
+	
+	
+	
+	/*************************************************************
+	 * 
+	 * 		HELPING FUNCTIONS 
+	 * 
+	 *************************************************************/
 	
 	public Integer checkInputFile(String uuid) {
 		String sql = "SELECT COUNT(*) FROM INPUT_FILE WHERE TASK_UUID='" + uuid + "'";
@@ -265,7 +297,7 @@ public class NewJobController {
 	}
 	
 	
-	public Integer findMaxPlusOneUUIDinTask() {
+	public Integer findMaxPlusOneUUIDinTask() { // this function should disappear because task_uuid it will have this shape DOKU0234-00001. It will be a new Input file for this
 		String sql = "SELECT MAX(TO_NUMBER(task_uuid)) FROM TASK";
 		List<Integer> i = jdbcTemplate.queryForList(sql, Integer.class);
 		if (i.size() == 0) { 
@@ -273,6 +305,17 @@ public class NewJobController {
 		} else  {		
 			LOGGER.info("New UUID in TASK is  " + i.get(0));
 			return 1 + i.get(0);
+		}
+	}
+	
+	
+	public Integer findUUIDinTask(String uuid) {
+		String sql = "SELECT TASK_UUID FROM TASK WHERE TASK_UUID='" + uuid + "'";
+		List<Integer> i = jdbcTemplate.queryForList(sql, Integer.class);
+		if (i.size() == 0) { 
+			return 0; 
+		} else  {		
+			return 1;
 		}
 	}
 	
