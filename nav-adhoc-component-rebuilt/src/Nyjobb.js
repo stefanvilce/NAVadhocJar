@@ -8,6 +8,7 @@ import { Input, Label } from 'nav-frontend-skjema';
 class Nyjobb extends Component {
 	
 	
+	
 	constructor(props) {
         super(props);
         this.addTheTitle = this.addTheTitle.bind(this);
@@ -32,7 +33,9 @@ class Nyjobb extends Component {
         		selectedFileWORD: null,
         		showSelectCSV: false,
         		showSelectWORD: false,
-        		disabledKnappLagreJobb: true
+        		disabledKnappLagreJobb: true,
+        		showUUIDMessageGreen: false,
+        		showUUIDMessageRed: false
         		
         };
     }
@@ -58,35 +61,42 @@ class Nyjobb extends Component {
     		this.setState({disabledKnappLagreJobb: true});
     		this.setState({unikuuid: false});
     	} else {
-    		console.log("UUID value: " + v);
-    		
+    		console.log("UUID value: " + v);    		
     		fetch('/api/checkuuid?uuid=' + v, {
                 method: 'GET'
-            }).then(response => response.text())
+            }).then(response => response.json())
             	.then(result => {
             		console.info(result);
-	                if(result.ok) {
-	                    console.log(result.data);	                    
-	                    //alert("The data were sent and saved!")
+	                if(result.status == "success"){
+	                	if(result.data.founduuid == "0") {
+		                    console.log(result.data);	
+		                    this.setState({showUUIDMessageGreen: true});
+		                    this.setState({showUUIDMessageRed: false});
+		                    this.setState({unikuuid: true});
+		                    this.checkAllFields();
+		                } else {
+		                	this.setState({showUUIDMessageRed: true});
+		                	this.setState({showUUIDMessageGreen: false});
+		                	this.setState({unikuuid: false});
+		                	this.checkAllFields();
+		                	console.log("Problemer: Denne UUID eksisterer allerede inn i databasen.");
+		                }
 	                } else {
-	                	alert("Error! We don't receive data!");            	
+	                	console.error("Communication problems!");
 	                }
             }).catch(error => console.log('error', error));  
-    		
-    		
+    		    		
     		this.setState({unikuuid: true});
-    		if(this.checkAllFields()){
-    			this.setState({disabledKnappLagreJobb: false});
-    		}    		
+    		this.checkAllFields();  		
     	}
     }
     
     checkAllFields(){
     	//We have to check all the fields to see if these contain informations. These should not be empty
     	if(this.state.unikuuid && this.state.requester.length > 0 && this.state.document_title.length > 0 && this.state.archive_unit.length > 0 && this.state.archive_theme.length > 0)
-    		return true 
+    		this.setState({disabledKnappLagreJobb: false})
     	else 
-    		return false; 
+    		this.setState({disabledKnappLagreJobb: true});
     }
     
     
@@ -109,21 +119,20 @@ class Nyjobb extends Component {
         });
     };
     
+          
     
-    handleChange = (ev) => {
-    	this.setState({[ev.target.name]: ev.target.value});
-    	if(this.checkAllFields()){	// activate the Lagre Ny Jobb button
-			this.setState({disabledKnappLagreJobb: false});
-		} else {
-			this.setState({disabledKnappLagreJobb: true});
-		}
-    }    
+    handleChange = (ev) => {    	
+    	this.setState({[ev.target.name]: ev.target.value}, this.checkAllFields);  	
+    	if([ev.target.name] == "uuid"){ // the green and red message under the field should disappear
+    		this.setState({showUUIDMessageGreen: false});
+            this.setState({showUUIDMessageRed: false});
+    	}    	
+    }
+    
     
     handleSubmit = () => {
     	//event.preventDefault();
-        
-        
-        const formData = new FormData();
+    	const formData = new FormData();
         formData.append('uuid', this.state.uuid);
         formData.append('requester', this.state.requester);
         formData.append('document_title', this.state.document_title);
@@ -131,21 +140,26 @@ class Nyjobb extends Component {
         formData.append('archive_theme', this.state.archive_theme);        
         formData.append('file', this.state.selectedFileCSV);
         formData.append('file2', this.state.selectedFileWORD);
-        fetch('/savenyjobb', {
-            method: 'post',
-            body: formData
-        }).then(res => {
-            if(res.ok) {
-                console.log(res.data);
-                alert("The data were sent and saved!")
-            } else {
-            	alert("Error! \nThe data cannot be sent!");            	
-            }
-        });  
         
-        
-        
-    }
+        if(this.state.selectedFileCSV != null){
+        	fetch('/api/savenyjobb', {
+	                method: 'post',
+	                body: formData
+	            }).then(res => res.json())
+	              .then(result => {
+	            	  if(result.status == "success"){
+	                      alert("Datoene ble sendt og lagret.");
+	                      this.props.history.push("/");
+	            	  } else {
+	            		  console.log(result);
+	            		  alert("Data er ikke lagret!");
+	            	  }
+	         }).catch(error => console.log('error', error));
+        } else {
+        	alert("Felten CSV fil er obligatorisk!");
+        	this.setState({showSelectCSV: true});
+        }
+    }    
     
 	
     render() {
@@ -168,7 +182,10 @@ class Nyjobb extends Component {
 							        	<td>
 						        			<Label htmlFor="uuid">Ordre nr.:</Label>
 							        		<Input name="uuid" id="uuid" type="text" value={this.state.uuid} onChange={this.handleChange} onBlur={this.enableDisableKnappLagreJobb} />
-						        		</td>
+							        		{this.state.showUUIDMessageGreen ? <span className="available_message">Dette Ord. nr. er tilgjengelig.</span> : null }
+							        		{this.state.showUUIDMessageRed ? <span className="notavailable_message">Dette Ord. nr. er ikke tilgjengelig.</span> : null }
+							        		
+							        	</td>
 						        		<td>
 						        			<Label htmlFor="requester">Bestiller:</Label>
 							        		<Input name="requester" id="requester" type="text" value={this.state.requester} onChange={this.handleChange} />

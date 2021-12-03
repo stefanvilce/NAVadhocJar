@@ -68,7 +68,6 @@ export default class AppNavbar extends Component {
 						        {this.state.link == "nyjobb" 
 						        	?
 							        	<ul className="nav-empower-button-list">
-							            	<li><Hovedknapp className="nav-empower-button" onClick={() => { showSelectFirstFormfc(); }}>Registrer jobb informasjon</Hovedknapp></li>
 							            	<li><Hovedknapp className="nav-empower-button" onClick={() => { showSelectCSVfc(); }}>Last inn mottakersliste</Hovedknapp></li>
 							            	<li><Hovedknapp className="nav-empower-button" onClick={() => { showSelectWORDfc(); }}>Last inn brevmal</Hovedknapp></li>
 							            	<li>

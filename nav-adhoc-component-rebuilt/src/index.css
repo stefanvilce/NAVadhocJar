@@ -4467,6 +4467,8 @@ table.tabell td {
 .rowSelected td.editable { background-color: #EDEDB3; }
 td.alignRight { text-align: right; }
 
+.wrappingform table tr td { vertical-align: top; }
+
 .wrappingform { margin: 0 auto; text-align: center; } 
 .wrappingform form { width: 450px; padding: 30px;  margin: 50px auto; border: 1px solid #CDCDCD; background-color: #F1F8FD; text-align: left; border-radius:5px; }
 .wrappingform fieldset { padding: 15px; border: none; }
@@ -4475,8 +4477,10 @@ td.alignRight { text-align: right; }
 .wrappingform fieldset label input[type=text] { border: 1px solid #989898; padding: 5px; width: 100%; font-size: 0.9em; color: #545454; }
 
 
-.uploadfileinput { width: 890px; margin: auto; text-align: left; }
+.uploadfileinput { max-width: 890px; margin: auto; text-align: left; }
 
+.available_message { color: #23CD23; padding-left: 5px; border-radius: 4px; margin-top: 6px; font-size: 0.62em; text-align: left; }
+.notavailable_message { color: #CD2323; padding-left: 5px; border-radius: 4px; margin-top: 6px; font-size: 0.62em; text-align: left; }
 
 /*
 .knapp {

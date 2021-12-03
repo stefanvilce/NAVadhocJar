@@ -114,14 +114,9 @@ public class NewJobController {
 	    	fileContent = file.getBytes();
 	    }
 	    
-	    Integer uuidInt = Integer.parseInt(uuid);
 	    int records = 0;
-	    if(uuidInt > 0) {
+	    if(uuid != null) {
 	    	records = checkInputFile(uuid);
-	    } else {
-	    	//create new UUID in TASK table if there is no TASK there 
-	    	Integer newUUID = findMaxPlusOneUUIDinTask();
-	    	uuid = newUUID.toString();
 	    }
 	    if(records > 0) {
 	    	LOGGER.info("There is a file for this Task already. Try again with another Task ID!");
@@ -143,7 +138,7 @@ public class NewJobController {
 	
 	
 	
-	@PostMapping(value = "/savenyjobb", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)	
+	@PostMapping(value = "/api/savenyjobb", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)	
     public ResponseEntity<?> saveNyJobb(	@RequestParam("uuid") String uuid,
 											@RequestParam("requester") String requester,  
 											@RequestParam("document_title") String document_title, 
@@ -175,18 +170,15 @@ public class NewJobController {
 	    	fileContent2 = file2.getBytes();
 	    }
 	    
-	    Integer uuidInt = Integer.parseInt(uuid);
+	    //Integer uuidInt = Integer.parseInt(uuid);
 	    Integer archive_unitInt = Integer.parseInt(archive_unit);
 	    int records = 0;
 	    int recordsTemplate_specification = 0;
-	    if(uuidInt > 0) {
+	    if(uuid != null) {
 	    	records = checkInputFile(uuid);
 	    	recordsTemplate_specification = checkTemplateSpecification(uuid);
-	    } else {
-	    	//create new UUID in TASK table if there is no TASK there 
-	    	Integer newUUID = findMaxPlusOneUUIDinTask();
-	    	uuid = newUUID.toString();
 	    }
+	    
 	    if(records > 0 && recordsTemplate_specification > 0) {
 	    	LOGGER.info("There is a file for this Task already. Try again with another Task ID!");
 	    } else {
@@ -209,9 +201,8 @@ public class NewJobController {
 	    			jdbcTemplate.update("INSERT INTO TEMPLATE_SPECIFICATION(TASK_UUID, FILE_TYPE, FILE_OBJECT) VALUES (?,?,?)", uuid, extension2, fileContent2);
 	    			LOGGER.info(String.format("File name '%s' uploaded successfully.", file2.getOriginalFilename()));
 	    		}	    		
-	    	}
-	    	
-	    }
+	    	}	    	
+	    }	    
 	    
 	    String jsonResponseOK = "{ \"status\": \"success\", \"data\": {\"uuid\": \"" + uuid + "\"} }";
 	    try {
@@ -297,21 +288,10 @@ public class NewJobController {
 	}
 	
 	
-	public Integer findMaxPlusOneUUIDinTask() { // this function should disappear because task_uuid it will have this shape DOKU0234-00001. It will be a new Input file for this
-		String sql = "SELECT MAX(TO_NUMBER(task_uuid)) FROM TASK";
-		List<Integer> i = jdbcTemplate.queryForList(sql, Integer.class);
-		if (i.size() == 0) { 
-			return 0; 
-		} else  {		
-			LOGGER.info("New UUID in TASK is  " + i.get(0));
-			return 1 + i.get(0);
-		}
-	}
 	
-	
-	public Integer findUUIDinTask(String uuid) {
+	public int findUUIDinTask(String uuid) {
 		String sql = "SELECT TASK_UUID FROM TASK WHERE TASK_UUID='" + uuid + "'";
-		List<Integer> i = jdbcTemplate.queryForList(sql, Integer.class);
+		List<String> i = jdbcTemplate.queryForList(sql, String.class);
 		if (i.size() == 0) { 
 			return 0; 
 		} else  {		
