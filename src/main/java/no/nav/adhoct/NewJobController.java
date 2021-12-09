@@ -189,7 +189,7 @@ public class NewJobController {
 	    		jdbcTemplate.update("INSERT INTO TEMPLATE_SPECIFICATION(TASK_UUID, FILE_TYPE, FILE_OBJECT) VALUES (?,?,?)", uuid, extension2, fileContent2);
 	    		jdbcTemplate.update("UPDATE TASK SET DATE_UPDATED=SYSDATE, REQUESTER=?, ARCHIVE_THEME=?, ARCHIVE_UNIT=?, DOCUMENT_TITLE=?  WHERE TASK_UUID=?", requester, archive_theme, archive_unitInt, document_title, uuid);
 	    	} else {
-	    		jdbcTemplate.update("INSERT INTO TASK(TASK_UUID, DATE_RECEIVED, DATE_UPDATED, REQUESTER, MAX_DOC_SPLIT, ARCHIVE_THEME, ARCHIVE_UNIT, DOCUMENT_TITLE) VALUES (?, SYSDATE, SYSDATE, ?, 1, ?, ?, ?)", uuid, requester, archive_theme, archive_unitInt, document_title);
+	    		jdbcTemplate.update("INSERT INTO TASK(TASK_UUID, STATUS, DATE_RECEIVED, DATE_UPDATED, REQUESTER, MAX_DOC_SPLIT, ARCHIVE_THEME, ARCHIVE_UNIT, DOCUMENT_TITLE) VALUES (?, ?, SYSDATE, SYSDATE, ?, 1, ?, ?, ?)", uuid, "registrert", requester, archive_theme, archive_unitInt, document_title);
 	    		LOGGER.info("New TASK_UUID created. The new TASK_ID is " + uuid);	    		
 	    		if(file != null) {
 	    			LOGGER.info("INSERT INTO INPUT_FILE(TASK_UUID, FILE_TYPE, FILE_OBJECT) VALUES ('%s','%s',?)", uuid, extension);

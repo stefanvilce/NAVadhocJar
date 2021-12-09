@@ -1,5 +1,6 @@
 package no.nav.adhoct.controllers;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -58,8 +59,24 @@ public class TaskController {
 	    } catch (JSONException ex) {
 	    	LOGGER.error("ERROR UPDATING MAX_DOC_SPLIT ?", jsonString);
 	    	return new ResponseEntity<String>("Done", HttpStatus.NOT_FOUND);
-	    } 
-		
+	    }
+	}
+	
+	
+	@PostMapping("/updatedeadline")
+	public @ResponseBody ResponseEntity<String> updateDeadline(@RequestParam(name = "task_uuid") String task_uuid, @RequestParam(name = "deadline") String deadline) throws ParseException {	
+		String jsonString = "{ \"status\": \"success\", \"data\":{\"task_uuid\":" + task_uuid + "}}";
+		LOGGER.info("UPDATE DEADLINE for TASK_UUID=" + task_uuid + "; DEADLINE=" + deadline);
+		try {
+			String rez = service.updateDeadline(task_uuid, deadline);
+			LOGGER.info("UPDATING task DEADLINE ... " + rez);
+			JSONObject jsonObject = new JSONObject(jsonString);
+            ResponseEntity<String> re = new ResponseEntity<String>(jsonObject.toString(), HttpStatus.OK);
+            return re;
+	    } catch (JSONException ex) {
+	    	LOGGER.error("ERROR UPDATING DEADLINE TASK ?", jsonString);
+	    	return new ResponseEntity<String>("Done", HttpStatus.NOT_FOUND);
+	    }
 	}
 	
 }

@@ -2,11 +2,20 @@ import React, { Component } from 'react';
 import './App.css';
 import AppNavbar from './AppNavbar';
 import { Container } from 'reactstrap';
-//import { Knapp } from 'nav-frontend-knapper';
 import { withRouter } from 'react-router-dom';
 import "nav-frontend-tabell-style";
+import DatePicker from 'react-datepicker';
+//import Datetime from 'react-datetime';
+import DateTimePicker from 'react-datetime-picker';
+import "react-datetime/css/react-datetime.css";
+import "react-datepicker/dist/react-datepicker.css";
+//import "bootstrap/dist/css/bootstrap.min.css";
+
+
 
 class Tasks extends Component {
+	
+
 	
 	constructor(props) {
         super(props);
@@ -16,6 +25,8 @@ class Tasks extends Component {
         this.reloadTasks = this.reloadTasks.bind(this);
         this.changeColor = this.changeColor.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
+        this.handleDeadlineChange = this.handleDeadlineChange.bind(this);
+        this.handleDeadlineClose = this.handleDeadlineClose.bind(this);
         this.escFunction = this.escFunction.bind(this);
         this.state = {
         		tasks: [],
@@ -25,10 +36,13 @@ class Tasks extends Component {
         		job: 0,
         		selectedRow: 0,
         		setEditMode: false,
-        		editTaskId: null
+        		setEditModeDeadline: false, 
+        		editTaskId: null,
+        		deadlineDate: new Date()
         };
     }
-
+	
+	
     componentDidMount() {
         fetch('/task/all')
             .then(response => response.json())
@@ -71,7 +85,7 @@ class Tasks extends Component {
      
     escFunction(event){
 	    if(event.keyCode === 27) {
-	    	this.setState({ setEditMode: false, editTaskId: null });
+	    	this.setState({ setEditMode: false, setEditModeDeadline: false, editTaskId: null });
 	    }
     }
      
@@ -93,6 +107,30 @@ class Tasks extends Component {
     	    setTimeout(() => {this.reloadTasks()}, 500);
     	  }
      }
+     
+     
+     handleDeadlineClose() {
+    	 const elId = this.state.editTaskId;
+    	 const deadline = this.state.deadlineDate;
+    	 console.log("Saved. DATE " + deadline.toISOString());
+    	 var requestOptions = {
+       		  method: 'POST',
+       		  redirect: 'follow'
+       		};
+       		fetch("/task/updatedeadline?task_uuid="+elId+"&deadline=" + deadline.toISOString(), requestOptions)
+       		  .then(response => response.text())
+       		  .then(result => console.log(result))
+       		  .catch(error => console.log('error', error));
+       	    this.setState({ setEditModeDeadline: false, editTaskId: null });       	    
+       	    setTimeout(() => {this.reloadTasks()}, 500);
+       	    this.setState({ setEditMode: false, setEditModeDeadline: false, editTaskId: null });
+     }
+     
+     
+     handleDeadlineChange = (date) => {
+     		//const elId = this.state.editTaskId; 
+     		this.setState({deadlineDate: date});
+     }
 	
     
      render() {
@@ -100,7 +138,7 @@ class Tasks extends Component {
     	var {docs} = this.state;
     	var {showDocs} = this.state;
     	var {h2} = this.state;
-    	
+
     	/*
     	if (isLoading) {
             return <p>Loading...</p>;  style={{whiteSpace: 'nowrap'}}
@@ -111,10 +149,25 @@ class Tasks extends Component {
             return <tr key={task.task_uuid} className={this.state.selectedRow === task.task_uuid ? "rowSelected" : "linje" } onClick={() => { this.getTaskId(task.task_uuid); this.changeColor(task.task_uuid); }}>
             	<td className="alignRight">{task.task_uuid}</td>
             	<td className="alignRight">{task.status}</td>
-                <td>{(task.date_received !== null) ? task.date_received.substring(0, 10) : " - "}</td>
-                <td>{(task.date_received !== null) ? task.date_received.substring(11, 19) : " "}</td>
-                <td>{(task.deadline !== null) ? task.deadline.substring(0, 10) : "-" }</td>
-                <td id={'maxdocs' + task.task_uuid} onClick={() => { this.setState({ setEditMode: true, editTaskId: task.task_uuid }); }} onBlur={() => { this.setState({ setEditMode: false, editTaskId: null }); }} className="editable alignRight">
+                <td>{(task.date_received !== null) ? task.date_received.substring(0, 19) : " - "}</td>
+                <td>{(task.date_updated !== null) ? task.date_updated.substring(0, 19) : " - "}</td>
+                <td id={'deadline' + task.task_uuid} onClick={() => { this.setState({ setEditModeDeadline: true, setEditMode: false, editTaskId: task.task_uuid }); }} onBlur={() => { /*this.setState({ setEditModeDeadline: false, editTaskId: null }); */}} className="editable">
+                	{
+                	(this.state.setEditModeDeadline && this.state.editTaskId === task.task_uuid) ?
+                			(<div><DatePicker id={'deadlineInput' + task.task_uuid}  defaultValue={task.deadline} value={this.state.deadlineDate} 
+                				selected={this.state.deadlineDate}
+                				onChange={this.handleDeadlineChange}
+	                			showTimeSelect
+                				dateFormat="y-MM-dd H:mm:ss"
+                	         /><button onClick={this.handleDeadlineClose}>Lagre</button></div>
+                	         ) 
+                	         : 
+        					 (
+        						(task.deadline !== null) ? task.deadline.substring(0, 19) : "-"
+        					 )
+                	}
+                </td>
+                <td id={'maxdocs' + task.task_uuid} onClick={() => { this.setState({ setEditMode: true, setEditModeDeadline: false, editTaskId: task.task_uuid }); }} onBlur={() => { this.setState({ setEditMode: false, editTaskId: null }); }} className="editable alignRight">
                 	{
                 	(this.state.setEditMode && this.state.editTaskId === task.task_uuid) ?
                 			( <input id={'maxdocsInput' + task.task_uuid} className="inputMaxDocsSplit" size="4" defaultValue={task.max_doc_split} onKeyPress={this.handleKeyPress}  /> ) : 
@@ -139,7 +192,7 @@ class Tasks extends Component {
 				                <th>Jobb<br />nummer</th>
 				                <th>Status</th>
 				                <th>Jobb<br />mottatt</th>
-				                <th>Jobb mottatt<br />tidspunkt</th>
+				                <th>Jobb<br />oppdatert</th>
 				                <th>Utsendelsesfrist</th>
 				                <th>Antall dokumenter<br />pr kjøring</th>
 				                <th>Antall<br />dokumenter<br />i jobb</th>

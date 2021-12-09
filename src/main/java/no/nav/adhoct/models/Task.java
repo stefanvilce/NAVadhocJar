@@ -11,6 +11,7 @@ public class Task {
   private String status;
   private String requester;
   private String date_received;
+  private String date_updated;
   private String deadline;
   private Integer max_doc_split;
   private Integer docs_in_job;
@@ -28,7 +29,7 @@ public class Task {
 
   }
 
-  public Task(String task_uuid, String status, String requester, String date_received, String deadline, Integer max_doc_split,
+  public Task(String task_uuid, String status, String requester, String date_received, String date_updated, String deadline, Integer max_doc_split,
   			 Integer docs_in_job, Integer docs_distributed, String expire_date, String doc_format, String csserver_id, byte[] preview_doc, 
   			 String archive_theme, Integer archive_unit, String document_title) 
   {
@@ -36,6 +37,7 @@ public class Task {
       this.status = status;
       this.requester = requester;
       this.date_received = date_received;
+      this.date_updated = date_updated;
       this.deadline = deadline;
       this.max_doc_split = max_doc_split;
       this.docs_in_job = docs_in_job;
@@ -75,6 +77,14 @@ public class Task {
 
 	public String getDate_received() {
 		return date_received;
+	}
+
+	public void setDate_updated(String date_updated) {
+		this.date_updated = date_updated;
+	}
+	
+	public String getDate_updated() {
+		return date_updated;
 	}
 
 	public void setDate_received(String date_received) {
