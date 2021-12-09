@@ -6,15 +6,13 @@ import { withRouter } from 'react-router-dom';
 import "nav-frontend-tabell-style";
 import DatePicker from 'react-datepicker';
 //import Datetime from 'react-datetime';
-import DateTimePicker from 'react-datetime-picker';
-import "react-datetime/css/react-datetime.css";
+//import DateTimePicker from 'react-datetime-picker';
+//import "react-datetime/css/react-datetime.css";
 import "react-datepicker/dist/react-datepicker.css";
-//import "bootstrap/dist/css/bootstrap.min.css";
 
 
 
-class Tasks extends Component {
-	
+class Tasks extends Component {	
 
 	
 	constructor(props) {
@@ -26,7 +24,7 @@ class Tasks extends Component {
         this.changeColor = this.changeColor.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleDeadlineChange = this.handleDeadlineChange.bind(this);
-        this.handleDeadlineClose = this.handleDeadlineClose.bind(this);
+        this.handleDeadlineSubmit = this.handleDeadlineSubmit.bind(this);
         this.escFunction = this.escFunction.bind(this);
         this.state = {
         		tasks: [],
@@ -109,7 +107,7 @@ class Tasks extends Component {
      }
      
      
-     handleDeadlineClose() {
+     handleDeadlineSubmit() {
     	 const elId = this.state.editTaskId;
     	 const deadline = this.state.deadlineDate;
     	 console.log("Saved. DATE " + deadline.toISOString());
@@ -119,16 +117,16 @@ class Tasks extends Component {
        		};
        		fetch("/task/updatedeadline?task_uuid="+elId+"&deadline=" + deadline.toISOString(), requestOptions)
        		  .then(response => response.text())
-       		  .then(result => console.log(result))
+       		  .then(result => { 
+       			  console.log(result);
+       			  this.setState({ setEditModeDeadline: false, editTaskId: null }, this.reloadTasks);
+       			  })       		  
        		  .catch(error => console.log('error', error));
-       	    this.setState({ setEditModeDeadline: false, editTaskId: null });       	    
-       	    setTimeout(() => {this.reloadTasks()}, 500);
-       	    this.setState({ setEditMode: false, setEditModeDeadline: false, editTaskId: null });
+       		setTimeout(() => {console.log("The new deadline was saved!")}, 500);
      }
      
      
-     handleDeadlineChange = (date) => {
-     		//const elId = this.state.editTaskId; 
+     handleDeadlineChange = (date) => { 
      		this.setState({deadlineDate: date});
      }
 	
@@ -159,7 +157,7 @@ class Tasks extends Component {
                 				onChange={this.handleDeadlineChange}
 	                			showTimeSelect
                 				dateFormat="y-MM-dd H:mm:ss"
-                	         /><button onClick={this.handleDeadlineClose}>Lagre</button></div>
+                	         /><button onClick={this.handleDeadlineSubmit}>Lagre</button></div>
                 	         ) 
                 	         : 
         					 (
