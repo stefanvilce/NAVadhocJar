@@ -25,6 +25,9 @@ class Tasks extends Component {
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleDeadlineChange = this.handleDeadlineChange.bind(this);
         this.handleDeadlineSubmit = this.handleDeadlineSubmit.bind(this);
+        this.getDocsForPage  = this.getDocsForPage.bind(this);
+        this.pageBtnPage = this.pageBtnPage.bind(this);
+        this.pageChangeSelect = this.pageChangeSelect.bind(this);
         this.escFunction = this.escFunction.bind(this);
         this.state = {
         		tasks: [],
@@ -36,7 +39,10 @@ class Tasks extends Component {
         		setEditMode: false,
         		setEditModeDeadline: false, 
         		editTaskId: null,
-        		deadlineDate: new Date()
+        		deadlineDate: new Date(),
+        		docs_rowsPerPage: 5,
+        		docs_selectedPage: 1,
+        		docs_maxPage: 1
         };
     }
 	
@@ -62,11 +68,26 @@ class Tasks extends Component {
     	if(this.state.job < 1){
     		alert('Du må velge en linje først.');
     	} else {
-	    	var doc_receiver_taskui_link = '/doc_receiver/taskid/' + this.state.job;
-	    	this.setState({ showDocs: true, h2: "Brevmottakerliste" });
-	    	fetch(doc_receiver_taskui_link).then(response => response.json()).then(data => this.setState({docs: data}));
+	    	this.setState({ showDocs: true, h2: "Brevmottakerliste", docs_rowsPerPage: 5, docs_selectedPage: 1, docs_maxPage: 1 });
+	    	var doc_receiverNrDocs_link = '/doc_receiver/nrdocspertaskid/' + this.state.job;
+	    	fetch(doc_receiverNrDocs_link).then(responseNr => responseNr.json()).then(
+	    			d => this.setState({docs_maxPage: Math.ceil(d.data.founddocsperuuid / this.state.docs_rowsPerPage)}, this.getDocsForPage)	    			
+	    	);
     	}    	
     }
+    
+    
+    getDocsForPage(){
+    	//this function does the same as getConsole()
+    	if(this.state.job < 1){
+    		alert('Du må velge en linje først.');
+    	} else {
+    		var doc_receiver_uuidperpage_link = '/doc_receiver/uuid/perpage/' + this.state.job + '/' + this.state.docs_selectedPage + '/' + this.state.docs_rowsPerPage;
+    		fetch(doc_receiver_uuidperpage_link).then(response => response.json()).then(data => this.setState({docs: data}));
+    	}
+    	
+    }
+    
     
     reloadTasks(){
     	this.setState({ showDocs: false, h2: "Jobboversikt" });
@@ -86,6 +107,36 @@ class Tasks extends Component {
 	    	this.setState({ setEditMode: false, setEditModeDeadline: false, editTaskId: null });
 	    }
     }
+    
+    
+     pageGoTilPage = (event) =>{
+    	 if(event.key === 'Enter'){
+    		 const inputValue = document.getElementById("page").value;
+    		 if(inputValue < 1 || inputValue > this.state.docs_maxPage){
+    			 alert("Verdien skal bli mellom 1 og " + this.state.docs_maxPage);
+    		 } else {
+    			 this.setState({ docs_selectedPage: inputValue }, this.getDocsForPage);
+    		 }    		     		 
+    	 }
+     }
+     
+     
+     pageBtnPage(p){
+    	 if(this.state.docs_selectedPage == 1 && p == -1){
+    		 alert("Denne er først side!");
+    	 } else if(this.state.docs_maxPage == this.state.docs_selectedPage && p == 1){
+    		 alert("Denne er siste side!");
+    	 } else {
+    		 var page = this.state.docs_selectedPage;
+    		 page = page + p;
+    		 this.setState({docs_selectedPage: page}, this.getDocsForPage);
+    	 }
+     }
+     
+     pageChangeSelect = (event) => {
+    	 this.setState({docs_rowsPerPage: event.target.value, docs_selectedPage: 1}, this.getDocsForPage);
+     }
+     
      
      
      handleKeyPress = (event) => {    	 
@@ -129,6 +180,29 @@ class Tasks extends Component {
      handleDeadlineChange = (date) => { 
      		this.setState({deadlineDate: date});
      }
+     
+     /*
+     calculateMaxPage = (data, rowsPerPage) => {
+    	  ///var d = Object.assign({}, data);
+    	  console.log(typeof data);
+    	  console.log(data);
+    	  console.log("calculateMaxPage: data.size -> " + Object.keys(data).length);
+    	  const num = Math.ceil(Object.keys(data).length / rowsPerPage);
+    	  console.log("calculateMaxPage: num -> " + num);
+    	  console.log("calculateMaxPage: data -> " + data);
+    	  return num; // I don't know if it is necessary to have this return once we've got state.docs_maxPage
+	 };
+
+	 sliceData = (data, page, rowsPerPage) => {
+		 var docsMax = this.calculateMaxPage(data, rowsPerPage);
+		 var d = Object.assign({}, data);
+		 console.log(d);
+		 //var docsMax = this.calculateMaxPage(d, rowsPerPage);
+		 console.log("RowsPerPage: " + rowsPerPage);
+		 console.log("docsMaxPage: " + docsMax);
+		 this.setState({docs_rowsPerPage: rowsPerPage, docs_maxPage: docsMax});   	  
+		 return Object.values(d.slice((page - 1) * rowsPerPage, page * rowsPerPage));
+	 };*/
 	
     
      render() {
@@ -184,7 +258,7 @@ class Tasks extends Component {
         });
     	
     	var theWholeTaskTable = (    		
-				    		<table className="tabell tabell--stripet">
+				    	<table className="tabell tabell--stripet">
 				            <thead>
 				            <tr>
 				                <th>Jobb<br />nummer</th>
@@ -207,10 +281,9 @@ class Tasks extends Component {
 				        </table>    		
     	);
     	
-    	/****/
-    	
+    	/****/    	
     	var docsList = docs.map(doc => {
-            return <tr key={doc.doc_uuid}>
+    	    return <tr key={doc.doc_uuid}>
             	<td>{doc.doc_uuid}</td>
             	<td>{doc.task_uuid}</td>
                 <td>{doc.journal_id}</td>
@@ -269,6 +342,31 @@ class Tasks extends Component {
 				    </table>
     	);
     	
+    	var paginate = (
+    			<div className="center">
+    				<button onClick={() => { this.pageBtnPage(-1) }}> &nbsp; &lt; &nbsp; </button> &nbsp;  
+    				<button onClick={() => { this.pageBtnPage(1) }}> &nbsp; &gt; &nbsp; </button> 
+    				
+    				<span> Siden {this.state.docs_selectedPage} av {this.state.docs_maxPage} | </span>
+    				
+    				<span>Gå til side: 
+    					<input id="page" className="inputMaxDocsSplit" size="4" pattern="[0-9]*" 
+    						value={this.state.docs_selectedPage}
+    						onChange={e => this.setState({docs_selectedPage: e.target.value})} 
+    						onBlur={e => (e.target.value == null || e.target.value < 1 || !Number.isInteger(e.target.value) || e.target.value > this.state.docs_maxPage) ?  this.setState({docs_selectedPage: 1}) : null }
+    						onKeyPress={this.pageGoTilPage} />
+    				</span>
+    				<span> | </span>
+    				<select id="selectPerPage" onChange={this.pageChangeSelect} value={this.state.docs_rowsPerPage}>
+	                    <option value="5">Vis 5</option>
+	                    <option value="10">Vis 10</option>
+	                    <option value="100">Vis 100</option>
+	                    <option value="1000">Vis 1000</option>
+	                 </select>
+    				
+    			</div>
+    	);
+    	
     
         return (
             <div>
@@ -278,6 +376,7 @@ class Tasks extends Component {
 	            	<h2>{h2}</h2>
 	            	<hr />
 	            	{showDocs ? theWholeDocTable : theWholeTaskTable}
+	            	{showDocs ? paginate : null}
 	            </Container>
             </div>
         );

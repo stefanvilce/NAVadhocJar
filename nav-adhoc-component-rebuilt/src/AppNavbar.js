@@ -92,9 +92,9 @@ export default class AppNavbar extends Component {
 							                }
 							            	{this.state.link == "tasks"
 							                    ? 
-							                    <li><Hovedknapp className="nav-empower-button" onClick={() => { getConsole(); this.knappBrevmottaker(1); }}>{this.state.knappBrevmottakerliste}</Hovedknapp></li>
+							                    <li><Hovedknapp className="nav-empower-button" onClick={() => { getConsole(); this.knappBrevmottaker(1); }}>{this.state.knappBrevmottakerliste}</Hovedknapp></li>							                    
 							                	: null
-							                }						            					            	
+							                }							            	
 							            </ul>
 						        }   
 						        </Column>
