@@ -5,10 +5,8 @@ import { Container } from 'reactstrap';
 import { withRouter } from 'react-router-dom';
 import "nav-frontend-tabell-style";
 import DatePicker from 'react-datepicker';
-//import Datetime from 'react-datetime';
-//import DateTimePicker from 'react-datetime-picker';
-//import "react-datetime/css/react-datetime.css";
 import "react-datepicker/dist/react-datepicker.css";
+
 
 
 
@@ -28,11 +26,21 @@ class Tasks extends Component {
         this.getDocsForPage  = this.getDocsForPage.bind(this);
         this.pageBtnPage = this.pageBtnPage.bind(this);
         this.pageChangeSelect = this.pageChangeSelect.bind(this);
+        this.getDocsStatus = this.getDocsStatus.bind(this);
+        this.getDocsJournalid = this.getDocsJournalid.bind(this);
+        this.getDocsPersonid = this.getDocsPersonid.bind(this);
+        this.statusChangeSelect = this.statusChangeSelect.bind(this);
+        this.journalidSearchHandleKeyPress = this.journalidSearchHandleKeyPress.bind(this);
+        this.personidSearchHandleKeyPress = this.personidSearchHandleKeyPress.bind(this);
         this.escFunction = this.escFunction.bind(this);
         this.state = {
         		tasks: [],
         		docs: [],
+        		docsstatus: [],
         		showDocs: false,
+        		showSelectDocsstatus: false,
+        		showSearchDocsjournalid: false,
+        		showSearchDocspersonid: false,
         		h2: 'Jobboversikt',
         		job: 0,
         		selectedRow: 0,
@@ -40,9 +48,13 @@ class Tasks extends Component {
         		setEditModeDeadline: false, 
         		editTaskId: null,
         		deadlineDate: new Date(),
+        		docs_nr: 0,
         		docs_rowsPerPage: 5,
         		docs_selectedPage: 1,
-        		docs_maxPage: 1
+        		docs_maxPage: 1,
+        		docs_filter: 'all',
+        		docs_search_journalid: 'all',
+        		docs_search_personid: 'all'
         };
     }
 	
@@ -60,18 +72,20 @@ class Tasks extends Component {
     		return "ADHOC :: NAV app";
     }
     
+    
     getTaskId(taskId){
     	this.setState({job: taskId});
     }
+    
     
     getConsole(){
     	if(this.state.job < 1){
     		alert('Du må velge en linje først.');
     	} else {
 	    	this.setState({ showDocs: true, h2: "Brevmottakerliste", docs_rowsPerPage: 5, docs_selectedPage: 1, docs_maxPage: 1 });
-	    	var doc_receiverNrDocs_link = '/doc_receiver/nrdocspertaskid/' + this.state.job;
+	    	var doc_receiverNrDocs_link = '/doc_receiver/nrdocspertaskid/' + this.state.job + '/' + this.state.docs_filter + '/' + this.state.docs_search_journalid + '/' + this.state.docs_search_personid;
 	    	fetch(doc_receiverNrDocs_link).then(responseNr => responseNr.json()).then(
-	    			d => this.setState({docs_maxPage: Math.ceil(d.data.founddocsperuuid / this.state.docs_rowsPerPage)}, this.getDocsForPage)	    			
+	    			d => this.setState({ docs_nr: d.data.founddocsperuuid, docs_maxPage: Math.ceil(d.data.founddocsperuuid / this.state.docs_rowsPerPage)}, this.getDocsForPage)	    			
 	    	);
     	}    	
     }
@@ -79,13 +93,28 @@ class Tasks extends Component {
     
     getDocsForPage(){
     	//this function does the same as getConsole()
-    	if(this.state.job < 1){
-    		alert('Du må velge en linje først.');
-    	} else {
-    		var doc_receiver_uuidperpage_link = '/doc_receiver/uuid/perpage/' + this.state.job + '/' + this.state.docs_selectedPage + '/' + this.state.docs_rowsPerPage;
-    		fetch(doc_receiver_uuidperpage_link).then(response => response.json()).then(data => this.setState({docs: data}));
-    	}
-    	
+   		var doc_receiver_uuidperpage_link = '/doc_receiver/uuid/perpage/' + this.state.job + '/' + this.state.docs_selectedPage + '/' + this.state.docs_rowsPerPage + 
+   																		'/' + this.state.docs_filter  + 
+   																		'/' + this.state.docs_search_journalid + 
+   																		'/' + this.state.docs_search_personid;
+		fetch(doc_receiver_uuidperpage_link).then(response => response.json()).then(data => this.setState({docs: data}));
+    }
+    
+    
+    getDocsStatus(){ // this function get the statuses of the docs and populate the Select element
+	    this.setState({ showSelectDocsstatus: true });
+		var doc_receiver_docsstatus = '/doc_receiver/uuid/statuses/' + this.state.job;
+		fetch(doc_receiver_docsstatus).then(response => response.json()).then(data => { console.log(data); this.setState({docsstatus: data}) });    	
+    }
+    
+    
+    getDocsJournalid(){
+    		this.setState({ showSearchDocsjournalid: true });    	
+    }
+    
+    
+    getDocsPersonid(){
+    		this.setState({ showSearchDocspersonid: true });    	
     }
     
     
@@ -133,10 +162,30 @@ class Tasks extends Component {
     	 }
      }
      
-     pageChangeSelect = (event) => {
-    	 this.setState({docs_rowsPerPage: event.target.value, docs_selectedPage: 1}, this.getDocsForPage);
+     
+     pageChangeSelect = (event) => {    	 
+    	 this.setState({docs_rowsPerPage: event.target.value, docs_selectedPage: 1, docs_maxPage: Math.ceil(this.state.docs_nr / event.target.value)}, this.getDocsForPage);
      }
      
+     
+     statusChangeSelect = (event) => {    	 
+    	 //this.setState({docs_filter: event.target.value, docs_selectedPage: 1}, this.setState({docs_maxPage: Math.ceil(this.state.docs_nr / this.state.docs_rowsPerPage)}, this.getDocsForPage));
+    	 this.setState({docs_filter: event.target.value, docs_selectedPage: 1}, this.getConsole);
+    	 if(event.target.value == 'all') { this.setState({ showSelectDocsstatus: false }) }
+     }
+     
+     
+     journalidSearchHandleKeyPress = (event) => {    	 
+    	 this.setState({docs_search_journalid: (event.target.value == '') ? 'all' : event.target.value, docs_selectedPage: 1}, this.getConsole);
+    	 if(event.key === 'Enter'){
+    		 if(event.target.value == '') { this.setState({ showSearchDocsjournalid: false, docs_search_journalid: 'all' }) }
+    	 }    	 
+     }
+     
+     
+     personidSearchHandleKeyPress = (event) => {    	 
+    	 this.setState({docs_search_personid: (event.target.value == '') ? 'all' : event.target.value, docs_selectedPage: 1}, this.getConsole);    	     	 
+     }
      
      
      handleKeyPress = (event) => {    	 
@@ -181,28 +230,6 @@ class Tasks extends Component {
      		this.setState({deadlineDate: date});
      }
      
-     /*
-     calculateMaxPage = (data, rowsPerPage) => {
-    	  ///var d = Object.assign({}, data);
-    	  console.log(typeof data);
-    	  console.log(data);
-    	  console.log("calculateMaxPage: data.size -> " + Object.keys(data).length);
-    	  const num = Math.ceil(Object.keys(data).length / rowsPerPage);
-    	  console.log("calculateMaxPage: num -> " + num);
-    	  console.log("calculateMaxPage: data -> " + data);
-    	  return num; // I don't know if it is necessary to have this return once we've got state.docs_maxPage
-	 };
-
-	 sliceData = (data, page, rowsPerPage) => {
-		 var docsMax = this.calculateMaxPage(data, rowsPerPage);
-		 var d = Object.assign({}, data);
-		 console.log(d);
-		 //var docsMax = this.calculateMaxPage(d, rowsPerPage);
-		 console.log("RowsPerPage: " + rowsPerPage);
-		 console.log("docsMaxPage: " + docsMax);
-		 this.setState({docs_rowsPerPage: rowsPerPage, docs_maxPage: docsMax});   	  
-		 return Object.values(d.slice((page - 1) * rowsPerPage, page * rowsPerPage));
-	 };*/
 	
     
      render() {
@@ -210,12 +237,40 @@ class Tasks extends Component {
     	var {docs} = this.state;
     	var {showDocs} = this.state;
     	var {h2} = this.state;
+    	var {docsstatus} = this.state;
 
     	/*
     	if (isLoading) {
             return <p>Loading...</p>;  style={{whiteSpace: 'nowrap'}}
         }
         */
+    	
+    	var docsstatusSelect = (
+    			<select className='selectStatus' onChange={this.statusChangeSelect}  value={this.state.docs_filter}>
+    				<option value='all'> </option>
+    				{docsstatus.map(text => (
+    		                <option value={text}>
+    		                    {text}
+    		                </option>
+    		            ))}
+    			</select>
+    	);
+    	
+    	
+    	var docsjournalidSearch = (
+    			<input className='selectStatus' onChange={this.journalidSearchHandleKeyPress} 
+    					onBlur = {() => { this.setState({showSearchDocsjournalid: false}) } }
+    					value={(this.state.docs_search_journalid=='all') ? '' : this.state.docs_search_journalid} 
+    			/>    			
+    	);
+    	
+    	
+    	var docspersonidSearch = (
+    			<input className='selectStatus' onChange={this.personidSearchHandleKeyPress} 
+    					onBlur = {() => { this.setState({showSearchDocspersonid: false}) } }
+    					value={(this.state.docs_search_personid=='all') ? '' : this.state.docs_search_personid} 
+    			/>    			
+    	);
     	
     	var tasksList = tasks.map(task => {
             return <tr key={task.task_uuid} className={this.state.selectedRow === task.task_uuid ? "rowSelected" : "linje" } onClick={() => { this.getTaskId(task.task_uuid); this.changeColor(task.task_uuid); }}>
@@ -314,8 +369,12 @@ class Tasks extends Component {
 				        <tr>
 				            <th>Dokument<br />id</th>
 				            <th>Jobb<br />nummer</th>
-				            <th>Journalid</th>
-				            <th>Status</th>
+				            <th><span onClick={this.getDocsJournalid}>Journalid <i class="searchLupa"></i></span>
+				            	{this.state.showSearchDocsjournalid ? docsjournalidSearch : null}
+				            </th>
+				            <th><span onClick={this.getDocsStatus}>Status <i class="arrow down"></i></span> 
+				            	{this.state.showSelectDocsstatus ? docsstatusSelect : null}
+				            </th>
 				            <th>Navn</th>
 				            <th>Adresse 1</th>
 				            <th>Adresse 2</th>
@@ -332,7 +391,9 @@ class Tasks extends Component {
 				            <th>Flettefelt 9</th>				            
 				            <th>Land</th>
 				            <th>Distribusjonsid</th>
-				            <th>Fødselsnummer</th>
+				            <th><span onClick={this.getDocsPersonid}>Fødselsnummer <i class="searchLupa"></i></span>
+				            	{this.state.showSearchDocspersonid ? docspersonidSearch : null}
+				            </th>
 				            <th>Dokument</th>
 				        </tr>
 				        </thead>
@@ -343,14 +404,12 @@ class Tasks extends Component {
     	);
     	
     	var paginate = (
-    			<div className="center">
-    				<button onClick={() => { this.pageBtnPage(-1) }}> &nbsp; &lt; &nbsp; </button> &nbsp;  
-    				<button onClick={() => { this.pageBtnPage(1) }}> &nbsp; &gt; &nbsp; </button> 
-    				
-    				<span> Siden {this.state.docs_selectedPage} av {this.state.docs_maxPage} | </span>
-    				
+    			<div className="pagination">
+    				<button onClick={() => { this.pageBtnPage(-1) }} className="btnPage"> &lt; </button>   
+    				<button onClick={() => { this.pageBtnPage(1) }}  className="btnPage"> &gt; </button>     				
+    				<span> Side <b>{this.state.docs_selectedPage}</b> av <b>{this.state.docs_maxPage}</b> | </span>    				
     				<span>Gå til side: 
-    					<input id="page" className="inputMaxDocsSplit" size="4" pattern="[0-9]*" 
+    					<input id="page" className="inputpage" size="4" pattern="[0-9]*" 
     						value={this.state.docs_selectedPage}
     						onChange={e => this.setState({docs_selectedPage: e.target.value})} 
     						onBlur={e => (e.target.value == null || e.target.value < 1 || !Number.isInteger(e.target.value) || e.target.value > this.state.docs_maxPage) ?  this.setState({docs_selectedPage: 1}) : null }
@@ -363,7 +422,7 @@ class Tasks extends Component {
 	                    <option value="100">Vis 100</option>
 	                    <option value="1000">Vis 1000</option>
 	                 </select>
-    				
+    				<span className="docs_results"> <b>{this.state.docs_nr}</b> resultater</span>
     			</div>
     	);
     	

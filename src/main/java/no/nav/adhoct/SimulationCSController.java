@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 //import io.swagger.annotations.Api;
 
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 //import io.swagger.annotations.*;
 
@@ -31,6 +33,13 @@ import org.springframework.http.HttpStatus;
 //@Api(tags = "Operations on EWS Exstream Engine, Communication Server")
 @RestController
 public class SimulationCSController {
+	
+	
+	@Value("${login.username}")
+    private String login_username;
+	
+	@Value("${login.password}")
+    private String login_password;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SimulationCSController.class);
 	
@@ -64,4 +73,28 @@ public class SimulationCSController {
         }
     }
 	
+	
+	
+	@RequestMapping(value = {"/api/login"}, method = RequestMethod.POST)
+    public ResponseEntity<String> login(@RequestParam(name = "username") String username, @RequestParam(name = "password") String password) {
+        LOGGER.info("LOGIN... username: " + username);
+        String jsonString = "{\n"
+                + "    \"status\": \"success\",\n"
+                + "    \"data\": {\n"
+                + "        \"username\": \"" + username +"\" \n"
+                + "    }\n"
+                + "}";
+        try {
+            JSONObject jsonObject = new JSONObject(jsonString);
+            if(login_username.equals(username) && login_password.equals(password)) {
+            	ResponseEntity<String> re = new ResponseEntity<String>(jsonObject.toString(), HttpStatus.OK);
+                return re;
+            } else {
+            	return new ResponseEntity<String>("NOT FOUND", HttpStatus.NOT_FOUND);
+            }
+            
+        } catch (JSONException ex) {
+            return new ResponseEntity<String>("NOT FOUND", HttpStatus.NOT_FOUND);
+        }
+    }
 }

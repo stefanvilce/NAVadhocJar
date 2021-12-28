@@ -5,23 +5,36 @@ import { Container, Row, Column } from "nav-frontend-grid";
 import { Panel } from 'nav-frontend-paneler';
 import { Hovedknapp, Fareknapp } from 'nav-frontend-knapper';
 
+//import { useCookies, setCookie } from "react-cookie";
+
 export default class AppNavbar extends Component {
+	
     constructor(props) {
         super(props);
         this.state = {isOpen: false};
         this.toggle = this.toggle.bind(this);
         this.go2nyjobb = this.go2nyjobb.bind(this);
         this.knappBrevmottaker = this.knappBrevmottaker.bind(this);
+        //this.handleCookie = this.handleCookie.bind(this);
         this.state = {
         		link: "",
         		knappBrevmottakerliste: "Brevmottakerliste"
         };
+        //const [cookies, setCookie] = useCookies(["user"]);
     }
     
     componentDidMount() {
         this.setState({link: window.location.pathname.split('/')[1]});
+        localStorage.setItem("stefan", "Stefan Cel Mare"); //handleCookie();
     }
     
+    /*
+    handleCookie() {
+        setCookie("user", "Euuuu", {
+          path: "/"
+        });
+    	localStorage.setItem("stefan", "Stefan Cel Mare");
+      }*/
 
     toggle() {
         this.setState({

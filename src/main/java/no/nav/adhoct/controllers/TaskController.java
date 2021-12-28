@@ -4,11 +4,14 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import javax.servlet.http.Cookie;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -28,12 +31,24 @@ public class TaskController {
 	
 	@Autowired
 	TaskService service;
+
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskController.class);
 	
 	
 	@GetMapping("/all")
 	public @ResponseBody ResponseEntity<List<Task>> getAll() {	
+		/*
+		// cookies
+		Cookie jwtTokenCookie = new Cookie("stefan", "Adica Eu");
+
+		jwtTokenCookie.setMaxAge(86400);
+		jwtTokenCookie.setSecure(false);
+		jwtTokenCookie.setHttpOnly(false);
+		//jwtTokenCookie.setDomain("https://localhost:8100");
+		//jwtTokenCookie.setPath("/");
+		LOGGER.info("Sunt la partea cu cookiurile. Si asat e valoare: " + otdsUrl);
+		*/
 		
 		try {
 			List<Task> lista = service.listAll();

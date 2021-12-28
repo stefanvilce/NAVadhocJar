@@ -36,23 +36,37 @@ public class Doc_receiverService {
 	}
 	
 	
-	public int nrOfDocsByUUID(String uuid) {
-		String sql = "SELECT COUNT(*) FROM DOC_RECEIVER WHERE TASK_UUID='" + uuid + "'";		
+	public int nrOfDocsByUUID(String uuid, String filter, String search_journal_id, String search_personal_id) {
+		String sqlFilter = (filter.equals("all") ? " " : " AND STATUS LIKE '" + filter + "'");
+		sqlFilter = sqlFilter + (search_journal_id.equals("all") ? " " : " AND JOURNAL_ID LIKE '%" + search_journal_id + "%'");
+		sqlFilter = sqlFilter + (search_personal_id.equals("all") ? " " : " AND PERSON_ID LIKE '%" + search_personal_id + "%'");
+		String sql = "SELECT COUNT(*) FROM DOC_RECEIVER WHERE TASK_UUID='" + uuid + "' " + sqlFilter;		
 		List<Integer> rows = jdbcTemplate.queryForList(sql, Integer.class);
 		if (rows.size() == 0) { 
-			return 0; } 
-		else  {			
+			return 0; 
+		} else  {			
 			return rows.get(0); 
 		}
     }
 	
 	
-	public List<Doc_receiver> listPerPageByTaskId(String uuid, int page, int perPage) {
+	public List<Doc_receiver> listPerPageByTaskId(String uuid, int page, int perPage, String filter, String search_journal_id, String search_personal_id) {
 		int skipFirstRows = (page - 1) * perPage;
-		String sql = "SELECT * FROM DOC_RECEIVER WHERE TASK_UUID='" + uuid + "' OFFSET " + skipFirstRows + " ROWS FETCH NEXT " + perPage + " ROWS ONLY";
+		String sqlFilter = (filter.equals("all") ? " " : " AND STATUS LIKE '" + filter + "'");
+		sqlFilter = sqlFilter + (search_journal_id.equals("all") ? " " : " AND JOURNAL_ID LIKE '%" + search_journal_id + "%'");
+		sqlFilter = sqlFilter + (search_personal_id.equals("all") ? " " : " AND PERSON_ID LIKE '%" + search_personal_id + "%'");
+		String sql = "SELECT * FROM DOC_RECEIVER WHERE TASK_UUID='" + uuid + "' " + sqlFilter + " OFFSET " + skipFirstRows + " ROWS FETCH NEXT " + perPage + " ROWS ONLY";
 		LOGGER.info("Get the docs for page nr. " + page + ": " + sql);
 		List<Doc_receiver> docreceiver_list = jdbcTemplate.query(sql,
                 BeanPropertyRowMapper.newInstance(Doc_receiver.class));
 		return docreceiver_list;
+    }
+	
+	
+	
+	public List<String> listStatusesByTaskId(String uuid) {
+		String sql = "SELECT DISTINCT STATUS FROM DOC_RECEIVER WHERE TASK_UUID='" + uuid + "'";
+		List<String> status_list=jdbcTemplate.queryForList(sql,String.class);
+		return status_list;
     }
 }

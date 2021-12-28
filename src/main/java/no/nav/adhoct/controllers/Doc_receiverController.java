@@ -54,16 +54,21 @@ public class Doc_receiverController {
 		
 	
 	
-	@GetMapping("/nrdocspertaskid/{task_id}")
-	public @ResponseBody ResponseEntity<?> nrOfDocsByUUID(@PathVariable String task_id) {	
+	@GetMapping("/nrdocspertaskid/{task_id}/{filter}/{search_journal_id}/{search_personal_id}")
+	public @ResponseBody ResponseEntity<?> nrOfDocsByUUID(@PathVariable String task_id, @PathVariable String filter, 
+															@PathVariable String search_journal_id,  
+															@PathVariable String search_personal_id) {	
 		LOGGER.info("Getting No. of Documents from DOC_RECEIVER table for TASK_UUID=" + task_id);
 		try {
-			Integer nrDocsPerUUID = service.nrOfDocsByUUID(task_id);			
+			Integer nrDocsPerUUID = service.nrOfDocsByUUID(task_id, filter, search_journal_id, search_personal_id);
 			
 			String jsonResponse = "{ \"status\": \"success\", \n "
 					+ "\"data\": { \n"
 					+ "\"founddocsperuuid\": \"" + nrDocsPerUUID + "\", \n "
-							+ "\"uuid\": \"" + task_id + "\" "
+							+ "\"uuid\": \"" + task_id + "\", "
+							+ "\"status_filter\": \"" + filter + "\", "
+							+ "\"search_journal_id\": \"" + search_journal_id + "\", "
+							+ "\"search_personal_id\": \"" + search_personal_id + "\" "
 							+ "\n} "
 							+ "\n}";
 			JSONObject jsonObject = new JSONObject(jsonResponse);
@@ -76,17 +81,30 @@ public class Doc_receiverController {
 	
 	
 	
-	@GetMapping("/uuid/perpage/{uuid}/{page}/{per_page}")
-	public @ResponseBody ResponseEntity<?> listPerPageByTaskId(@PathVariable String uuid, @PathVariable Integer page, @PathVariable Integer per_page) {	
-		LOGGER.info("Getting the Documents from DOC_RECEIVER table for TASK_UUID=" + uuid + " / per page");		
+	@GetMapping("/uuid/perpage/{uuid}/{page}/{per_page}/{filter}/{search_journal_id}/{search_personal_id}")
+	public @ResponseBody ResponseEntity<?> listPerPageByTaskId(@PathVariable String uuid, @PathVariable Integer page, @PathVariable Integer per_page, 
+																@PathVariable String filter, 
+																@PathVariable String search_journal_id,  
+																@PathVariable String search_personal_id) {	
+		LOGGER.info("Getting the Documents from DOC_RECEIVER table for TASK_UUID=" + uuid + " / per page/ with filter and searching");		
 		try {
-			List<Doc_receiver> lista = service.listPerPageByTaskId(uuid, page, per_page);
+			List<Doc_receiver> lista = service.listPerPageByTaskId(uuid, page, per_page, filter, search_journal_id, search_personal_id);
 	        return new ResponseEntity<List<Doc_receiver>>(lista, HttpStatus.OK);
 	    } catch (NoSuchElementException e) {
 	        return new ResponseEntity<List<Doc_receiver>>(HttpStatus.NOT_FOUND);
-	    }
-		
+	    }		
 	}
 	
+	
+	@GetMapping("/uuid/statuses/{uuid}")
+	public @ResponseBody ResponseEntity<?> listStatusesByTaskId(@PathVariable String uuid) {	
+		LOGGER.info("Getting Statuses for Documents from DOC_RECEIVER table for TASK_UUID=" + uuid + ". ");		
+		try {
+			List<String> lista = service.listStatusesByTaskId(uuid);
+	        return new ResponseEntity<List<String>>(lista, HttpStatus.OK);
+	    } catch (NoSuchElementException e) {
+	        return new ResponseEntity<List<String>>(HttpStatus.NOT_FOUND);
+	    }		
+	}
 	
 }
