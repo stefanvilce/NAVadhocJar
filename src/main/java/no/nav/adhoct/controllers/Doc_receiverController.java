@@ -3,6 +3,9 @@ package no.nav.adhoct.controllers;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,16 +31,22 @@ public class Doc_receiverController {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(Doc_receiverController.class);	
 	
-	@GetMapping("/all")
-	public @ResponseBody ResponseEntity<List<Doc_receiver>> getAll() {	
+	@GetMapping("/all/{token}")
+	public @ResponseBody ResponseEntity<List<Doc_receiver>> getAll(@PathVariable String token, HttpServletRequest request) {
 		LOGGER.info("GET all Documents from DOC_RECEIVER table.");
+		HttpSession session=request.getSession();
+		String tokenFromSession = (String) session.getAttribute("token");
 		try {
-			List<Doc_receiver> lista = service.listAll();
-	        return new ResponseEntity<List<Doc_receiver>>(lista, HttpStatus.OK);
+			if(tokenFromSession.equals(token)) {
+				List<Doc_receiver> lista = service.listAll();
+		        return new ResponseEntity<List<Doc_receiver>>(lista, HttpStatus.OK);	
+			} else {
+				LOGGER.info("Trying to get the REST API whitout being loggedin. The SESSIONS are not active.");
+				return new ResponseEntity<List<Doc_receiver>>(HttpStatus.NOT_FOUND);
+			}			
 	    } catch (NoSuchElementException e) {
 	        return new ResponseEntity<List<Doc_receiver>>(HttpStatus.NOT_FOUND);
-	    } 
-		
+	    }
 	}
 	
 	

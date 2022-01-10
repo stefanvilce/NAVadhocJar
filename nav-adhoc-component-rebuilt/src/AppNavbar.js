@@ -18,7 +18,8 @@ export default class AppNavbar extends Component {
         //this.handleCookie = this.handleCookie.bind(this);
         this.state = {
         		link: "",
-        		knappBrevmottakerliste: "Brevmottakerliste"
+        		knappBrevmottakerliste: "Brevmottakerliste",
+        		loggedin: ""
         };
         //const [cookies, setCookie] = useCookies(["user"]);
     }
@@ -26,15 +27,10 @@ export default class AppNavbar extends Component {
     componentDidMount() {
         this.setState({link: window.location.pathname.split('/')[1]});
         localStorage.setItem("stefan", "Stefan Cel Mare"); //handleCookie();
+        //localStorage.setItem("loggedin", "YES"); // this is temporary
+        localStorage.getItem("loggedin") == "YES" ? this.setState({ loggedin: "YES"}) : this.setState({ loggedin: "NO"});
     }
-    
-    /*
-    handleCookie() {
-        setCookie("user", "Euuuu", {
-          path: "/"
-        });
-    	localStorage.setItem("stefan", "Stefan Cel Mare");
-      }*/
+
 
     toggle() {
         this.setState({
@@ -68,7 +64,7 @@ export default class AppNavbar extends Component {
     	
     	var getConsole = this.props.getConsole;
     	var reloadTasks = this.props.reloadTasks;
-    	var showSelectFirstFormfc = this.props.showSelectFirstFormfc;
+    	//var showSelectFirstFormfc = this.props.showSelectFirstFormfc;
     	var showSelectCSVfc = this.props.showSelectCSVfc;
     	var showSelectWORDfc = this.props.showSelectWORDfc;
     	var handleSubmit = this.props.handleSubmit;
@@ -96,18 +92,27 @@ export default class AppNavbar extends Component {
 						            :
 							            <ul className="nav-empower-button-list">
 							            	<li><Link to="/"><Hovedknapp className="nav-empower-button">Startside</Hovedknapp></Link></li>
-							            	<li><Link to="/nyjobb"><Hovedknapp className="nav-empower-button">Ny jobb</Hovedknapp></Link></li>						            	
-							            	{this.state.link == "tasks"
-							                    ? 
-							                    <li><Hovedknapp className="nav-empower-button" onClick={() => { reloadTasks(); this.knappBrevmottaker(-1); }}>Jobboversikt</Hovedknapp></li>
-							                	: 
-							                	<li><Link to="/tasks"><Hovedknapp className="nav-empower-button">Jobboversikt</Hovedknapp></Link></li>
-							                }
-							            	{this.state.link == "tasks"
-							                    ? 
-							                    <li><Hovedknapp className="nav-empower-button" onClick={() => { getConsole(); this.knappBrevmottaker(1); }}>{this.state.knappBrevmottakerliste}</Hovedknapp></li>							                    
-							                	: null
-							                }							            	
+							            	{this.state.loggedin != "YES" ? null : 
+							            		<React.Fragment>
+									            	<li><Link to="/nyjobb"><Hovedknapp className="nav-empower-button">Ny jobb</Hovedknapp></Link></li>					            	
+									            	{this.state.link == "tasks"
+									                    ? 
+									                    <li><Hovedknapp className="nav-empower-button" onClick={() => { reloadTasks(); this.knappBrevmottaker(-1); }}>Jobboversikt</Hovedknapp></li>
+									                	: 
+									                	<li><Link to="/tasks"><Hovedknapp className="nav-empower-button">Jobboversikt</Hovedknapp></Link></li>
+									                }
+									            	
+									            	{this.state.link == "tasks"
+									                    ? 
+									                    <li><Hovedknapp className="nav-empower-button"
+									                    	onClick={() => { getConsole(); this.knappBrevmottaker(1); }}>
+									                    		{this.state.knappBrevmottakerliste}
+									                    	</Hovedknapp>
+									                    </li>							                    
+									                	: null
+									                }
+								            	</React.Fragment>
+								            	}
 							            </ul>
 						        }   
 						        </Column>
@@ -117,28 +122,3 @@ export default class AppNavbar extends Component {
         </>;
     }
 }
-
-
-
-/*
- * 
- * <Navbar color="dark" dark expand="md">
-            		<NavbarBrand tag={Link} to="/">Home</NavbarBrand>
-            </Navbar>
- */ 
-
-
-/*
-<Panel>
-	            <Container className="nav-empower-frontend-container">
-	                <Row className="nav-empower-frontend-row">
-	                    <Column className="nav-empower-frontend-column-buttons col-sm-2">
-	                        <ul className="nav-empower-button-list">
-	                        	<li><Knapp tag={Link} to="/">Home</Knapp></li>
-	                        	<li><Knapp tag={Link} to="/">Ny Jobb</Knapp></li>
-	                        </ul>
-	                    </Column>
-	                </Row>    
-	              </Container>
-	             </Panel>
-*/

@@ -17,6 +17,9 @@ import java.io.IOException;
 //import java.text.SimpleDateFormat;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -144,8 +147,10 @@ public class NewJobController {
 											@RequestParam("document_title") String document_title, 
 											@RequestParam("archive_unit") String archive_unit, 
 											@RequestParam("archive_theme") String archive_theme, 
+											@RequestParam(name = "token") String token, 
     										@RequestParam(value = "file", required = false) MultipartFile file,
-    										@RequestParam(value = "file2", required = false) MultipartFile file2    										
+    										@RequestParam(value = "file2", required = false) MultipartFile file2,
+    										HttpServletRequest request
     									) throws IOException {
 		// if UUID == 0 then save a new UUID
 		// else overwrite the old UUID / modify OLD UUID
@@ -170,7 +175,6 @@ public class NewJobController {
 	    	fileContent2 = file2.getBytes();
 	    }
 	    
-	    //Integer uuidInt = Integer.parseInt(uuid);
 	    Integer archive_unitInt = Integer.parseInt(archive_unit);
 	    int records = 0;
 	    int recordsTemplate_specification = 0;
@@ -178,6 +182,14 @@ public class NewJobController {
 	    	records = checkInputFile(uuid);
 	    	recordsTemplate_specification = checkTemplateSpecification(uuid);
 	    }
+	    
+	    HttpSession session=request.getSession();
+		String tokenFromSession = (String) session.getAttribute("token");
+		if(!tokenFromSession.equals(token)) {
+			//IF the sessions are not OK, then we get out of the function
+			LOGGER.error("Trying to call REST API (saving ny job) without being loggedin. The SESSIONS are not active.");
+			return new ResponseEntity<String>("You have to be loggedin.", HttpStatus.NOT_FOUND); 
+		}
 	    
 	    if(records > 0 && recordsTemplate_specification > 0) {
 	    	LOGGER.info("There is a file for this Task already. Try again with another Task ID!");

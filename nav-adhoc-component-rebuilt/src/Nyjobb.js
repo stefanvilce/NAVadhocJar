@@ -35,8 +35,7 @@ class Nyjobb extends Component {
         		showSelectWORD: false,
         		disabledKnappLagreJobb: true,
         		showUUIDMessageGreen: false,
-        		showUUIDMessageRed: false
-        		
+        		showUUIDMessageRed: false        		
         };
     }
 		

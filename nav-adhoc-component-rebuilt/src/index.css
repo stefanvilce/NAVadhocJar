@@ -4530,63 +4530,13 @@ span.docs_results { color: #565656; padding-left: 50px; }
 
 .selectStatus { font-size: 0.87em; display: block; }
 
+.loginform { margin: 50px auto; padding: 30px; width: 420px; }
+.loginform div.loginformInn { padding: 25px; }
+.loginform h3 { background-color: #F1F1F3; border-bottom: 3px solid #D1D1D7; border-radius: 7px 7px 0 0; text-align: center; padding: 15px; color: #615549; }
+.inputlogin { display: block; width: 100%; padding: 5px; border: 1px solid #595995; margin-bottom: 12px; }
+.loginform span { font-size: 0.78em; color: #615549; }
 
-/*
-.knapp {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    font-family: Source Sans Pro,Arial,sans-serif;
-    font-size: 1em;
-    white-space: nowrap;
-    border-radius: .125em;
-    cursor: pointer;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    letter-spacing: .0625em;
-    line-height: 1.375rem;
-    text-decoration: none;
-    background-color: #fff;
-    padding: calc(.475rem - 1px) 2.5rem calc(.525rem - 1px);
-    min-height: 2.5rem;
-    vertical-align: middle;
-    border: 2px solid #0067c5;
-    color: #0067c5;	
-}
 
-.knapp--fare{
-	color: #fff;
-    border-color: #ba3a26;
-    background-color: #ba3a26;
-    position: relative;
-    border-width: 1px;
-}
-
-.linkknapp {
-	align-items: center;
-	justify-content: center;
-	font-weight: 600;
-	font-family: Source Sans Pro,Arial,sans-serif;
-	font-size: 1em;
-	white-space: nowrap;
-	border-radius: .125em;
-	cursor: pointer;
-	-webkit-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-	letter-spacing: .0625em;
-	line-height: 1.375rem;
-	text-decoration: none;
-	background-color: #fff;
-	padding: calc(.475rem - 1px) 2.5rem calc(.525rem - 1px);
-	min-height: 2.5rem;
-	vertical-align: middle;
-	border: 2px solid #0067c5;
-	color: #0067c5;
-	text-decoration: none;	
-}*/
 
 #cancelbutton {
 	margin-left: 15px; margin-top: 3px; 
