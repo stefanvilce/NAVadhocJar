@@ -169,7 +169,6 @@ class Tasks extends Component {
      
      
      statusChangeSelect = (event) => {    	 
-    	 //this.setState({docs_filter: event.target.value, docs_selectedPage: 1}, this.setState({docs_maxPage: Math.ceil(this.state.docs_nr / this.state.docs_rowsPerPage)}, this.getDocsForPage));
     	 this.setState({docs_filter: event.target.value, docs_selectedPage: 1}, this.getConsole);
     	 if(event.target.value == 'all') { this.setState({ showSelectDocsstatus: false }) }
      }
@@ -197,7 +196,7 @@ class Tasks extends Component {
     		  method: 'POST',
     		  redirect: 'follow'
     		};
-    		fetch("/task/update?task_uuid="+elId+"&max_doc_split="+inputValue, requestOptions)
+    		fetch("/task/update?task_uuid=" + elId + "&max_doc_split=" + inputValue + "&token=" + localStorage.getItem("token"), requestOptions)
     		  .then(response => response.text())
     		  .then(result => console.log(result))
     		  .catch(error => console.log('error', error));
@@ -215,7 +214,7 @@ class Tasks extends Component {
        		  method: 'POST',
        		  redirect: 'follow'
        		};
-       		fetch("/task/updatedeadline?task_uuid="+elId+"&deadline=" + deadline.toISOString(), requestOptions)
+       		fetch("/task/updatedeadline?task_uuid="+elId+"&deadline=" + deadline.toISOString() + "&token=" + localStorage.getItem("token"), requestOptions)
        		  .then(response => response.text())
        		  .then(result => { 
        			  console.log(result);

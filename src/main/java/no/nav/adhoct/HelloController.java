@@ -22,7 +22,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 @RestController
 public class HelloController {
-
+	//this class is only for testing. Not used anymore.
 
 	@Autowired
     private JdbcTemplate jdbcTemplate;
@@ -54,45 +54,6 @@ public class HelloController {
 	    textul += " </table><hr></div>";
 	    textul += "<div style='text-align: center; padding: 30px;'><a href='/nyjobb' style='padding: 5px 40px 5px 40px; background-color: 4444CD; color: white; font-weight: 600; border-radius:1px; text-decoration: none; font-family: Tahoma;'>Registrer ny jobb</a></div>";
 	    textul += "<a href='/alldocs'>Go to DOC RECEIVER Table</a>";
-		return textul;
-	}
-	
-	
-	@GetMapping("/alldocsvechi")
-	public String doc_receiverListAll() {
-		
-		String sql = "SELECT * FROM DOC_RECEIVER";
-		List<Doc_receiver> alldocs = jdbcTemplate.query(sql,
-	                BeanPropertyRowMapper.newInstance(Doc_receiver.class));
-	   
-		LOGGER.info("See all docs");
-		
-	    String textul = "<div style='font-family: Arial; color: #344596;'><H1 style='text-align: center; '>AdHoc App</H1><h2 style='text-align: center;color: #DA7643;'>Tabellen DOC_RECEIVER</h2>";
-	    textul += "<table style='border: 1px dashed #DCDCDC;'>"
-	    		+ "<tr style='text-align: center; font-weight: bold; border: 1px solid #878787; padding: 1px;'>"
-	    		+ "				<td style='padding: 3px; font-size: 11px;'>DOC_UUID</td>"
-	    		+ "				<td style='padding: 3px; font-size: 11px;'>TASK_UUID</td>"
-	    		+ "				<td style='padding: 3px; font-size: 11px;'>JOURNAL_ID</td>"
-	    		+ "				<td style='padding: 3px; font-size: 11px;'>STATUS</td>"
-	    		+ "				<td style='padding: 3px; font-size: 11px;'>DOC_NAME</td>"
-	    		+ "				<td style='padding: 3px; font-size: 11px;'>ADRESS</td>"
-	    		+ "				<td style='padding: 3px; font-size: 11px;'>ZIP</td>"
-	    		+ "				<td style='padding: 3px; font-size: 11px;'>CITY</td>"
-	    		+ "				<td style='padding: 3px; font-size: 11px;'>COUNTRY</td>"
-	    		+ "</tr>";
-	    for(Doc_receiver model : alldocs) {
-	    	textul += "<tr><td style='border: 1px solid #B8B8B8; padding: 2px; font-size: 10px;'>" + model.getDoc_uuid() + "</td>"
-	    			+ "			<td style='border: 1px solid #B8B8B8; padding: 2px; font-size: 10px;'>" + model.getTask_uuid() + "</td>"
-	    			+ "			<td style='border: 1px solid #B8B8B8; padding: 2px; font-size: 10px;'>" + model.getJournal_id() + "</td>"
-	    			+ "			<td style='border: 1px solid #B8B8B8; padding: 2px; font-size: 10px;'>" + model.getStatus() + "</td>"
-	    			+ "			<td style='border: 1px solid #B8B8B8; padding: 2px; font-size: 10px;'>" + model.getName() + "</td>"
-	    			+ "			<td style='border: 1px solid #B8B8B8; padding: 2px; font-size: 10px;'>" + model.getAddress1() + "" + model.getAddress2() + "</td>"
-	    			+ "			<td style='border: 1px solid #B8B8B8; padding: 2px; font-size: 10px;'>" + model.getZip() + "</td>"
-	    			+ "			<td style='border: 1px solid #B8B8B8; padding: 2px; font-size: 10px;'>" + model.getCity() + "</td>"
-	    			+ "			<td style='border: 1px solid #B8B8B8; padding: 2px; font-size: 10px;'>" + model.getCountry() + "</td>"
-	    			+ "</tr>";           
-        }
-	    textul += " </table><hr></div>";	    
 		return textul;
 	}
 

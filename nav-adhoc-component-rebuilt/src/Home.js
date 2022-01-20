@@ -14,6 +14,7 @@ class Home extends Component {
 	        this.handleSubmit = this.handleSubmit.bind(this);
 	        this.handleLogout = this.handleLogout.bind(this);
 	        this.checkAllFields = this.checkAllFields.bind(this);
+	        this.checkLoggedin = this.checkLoggedin.bind(this);
 	        this.state = {
 	        		isOpen: false,
 	        		loggedin: "",
@@ -28,10 +29,8 @@ class Home extends Component {
 	
 	 
 	 componentDidMount() {
-	        localStorage.getItem("loggedin") == "YES" ? this.setState({ loggedin: "YES"}) : this.setState({ loggedin: "NO"});
+	        localStorage.getItem("loggedin") == "YES" ? this.checkLoggedin() : this.setState({ loggedin: "NO"});
 	 }
-	 
-	 
 	 
 	 
 	 handleChange = (ev) => {    	
@@ -45,6 +44,37 @@ class Home extends Component {
 	    		this.setState({disableKnapp: false})
 	    	else 
 	    		this.setState({disableKnapp: true});
+	 }
+	 
+	 
+	 checkLoggedin(){
+		 //This is for checking if the SESSION is still available when you get back in the application
+		 	var requestOptions = {
+			  method: 'GET',
+			  redirect: 'follow'
+			};
+	
+			fetch("/api/checkloggedin/" + localStorage.getItem("token"), requestOptions)
+			  .then(response => response.json())
+			  .then(result => {				  	
+				  	var status = result.status;
+				  	if(status == "success"){
+				  		if(result.data.loggedin != "yes"){
+				  			localStorage.removeItem("bruker");
+						 	localStorage.removeItem("loggedin");
+						 	localStorage.removeItem("token");
+				  			this.setState({bruker: "", loggedin: "", refreshLogout: true});
+				  		} else {
+				  			this.setState({ loggedin: "YES"});
+				  		}
+				  	} else {
+				  		localStorage.removeItem("bruker");
+					 	localStorage.removeItem("loggedin");
+					 	localStorage.removeItem("token");
+					 	this.setState({bruker: "", loggedin: "", refreshLogout: true});
+				  	}
+				  })
+			  .catch(error => console.log('error', error));
 	 }
 	 
 	 
@@ -77,6 +107,7 @@ class Home extends Component {
 	 handleLogout() {    	
 		 	localStorage.removeItem("bruker");
 		 	localStorage.removeItem("loggedin");
+		 	localStorage.removeItem("token");
 	    	this.setState({bruker: "", loggedin: "", refreshLogout: true});
 	 }
 	 

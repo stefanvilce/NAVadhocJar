@@ -2,7 +2,7 @@ package no.nav.adhoct.controllers;
 
 
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.web.bind.annotation.PathVariable;
 //import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -59,25 +59,16 @@ public class LoginController {
 								    		HttpServletRequest request,
 								            HttpServletResponse response) 
 	{
-		/*
-		HttpSession session=request.getSession();  
-        String uname = (String) session.getAttribute("token");  
-        LOGGER.info(" **** SESIUNEA (token): " + uname);
-        */
+
         LOGGER.info("LOGIN... username: " + username);
         String jsonString = "";
         try {
             if(login_username.equals(username) && login_password.equals(password)) {
             	
-            	//generate a new session
                 HttpSession newSession = request.getSession(true);
-                //Cookie message = new Cookie("message", "Welcome");
-                //response.addCookie(message);
                 String token = generateToken();
                 newSession.setAttribute("token", token);
                 newSession.setAttribute("username", username);
-                
-                //https://medium.com/@kasunpdh/session-management-in-java-using-servlet-filters-and-cookies-7c536b40448f                
                 
                 jsonString = "{\n"
                         + "    \"status\": \"success\",\n"
@@ -132,6 +123,28 @@ public class LoginController {
         }
 	}
 	
+	
+	@RequestMapping(value = {"/api/checkloggedin/{token}"}, method = RequestMethod.GET)
+    public ResponseEntity<String> checkLoggedin(@PathVariable String token, HttpServletRequest request) 	{
+		HttpSession session=request.getSession();  
+        String username = (String) session.getAttribute("username"); 
+        String tokenFromSession = (String) session.getAttribute("token");
+        String loggedin = (tokenFromSession.equals(token) ? "yes" : "no");
+		String jsonString = "{\n"
+                + "    \"status\": \"success\",\n"
+                + "    \"data\": {\n"
+                + "        \"username\": \"" + username + "\", \n"
+                + "        \"loggedin\": \"" + loggedin + "\" \n"
+                + "    }\n"
+                + "}";
+		try {
+			JSONObject jsonObject = new JSONObject(jsonString);
+        	ResponseEntity<String> re = new ResponseEntity<String>(jsonObject.toString(), HttpStatus.OK);
+            return re;
+		} catch (JSONException ex) {
+            return new ResponseEntity<String>("NOT FOUND", HttpStatus.NOT_FOUND);
+        }
+	}
 	
 	
 	private static String generateToken() {

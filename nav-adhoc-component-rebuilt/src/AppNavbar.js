@@ -26,8 +26,6 @@ export default class AppNavbar extends Component {
     
     componentDidMount() {
         this.setState({link: window.location.pathname.split('/')[1]});
-        localStorage.setItem("stefan", "Stefan Cel Mare"); //handleCookie();
-        //localStorage.setItem("loggedin", "YES"); // this is temporary
         localStorage.getItem("loggedin") == "YES" ? this.setState({ loggedin: "YES"}) : this.setState({ loggedin: "NO"});
     }
 
@@ -64,7 +62,6 @@ export default class AppNavbar extends Component {
     	
     	var getConsole = this.props.getConsole;
     	var reloadTasks = this.props.reloadTasks;
-    	//var showSelectFirstFormfc = this.props.showSelectFirstFormfc;
     	var showSelectCSVfc = this.props.showSelectCSVfc;
     	var showSelectWORDfc = this.props.showSelectWORDfc;
     	var handleSubmit = this.props.handleSubmit;

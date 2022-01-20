@@ -20,6 +20,8 @@ import no.nav.adhoct.models.*;
 @Controller
 public class IndexController {
 
+	//this class is NOT necessary anymore. It should be deleted 
+	
 	
 	@Autowired
     private JdbcTemplate jdbcTemplate;
@@ -98,15 +100,6 @@ public class IndexController {
 	    textul += "<a href='/'>Go to INPUT_FILE Table</a>";
 	    model.addAttribute("content", textul);		
 		return "index";
-	}
-	
-	
-	
-	
-	public void heiHeii() {
-		int n = 1;
-		int p = n +1000;
-		System.out.println("Buuey, uite ce avem noi aici: Il avem pe P si pe N: " + p);
-	}
+	}	
 	
 }

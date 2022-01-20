@@ -1,4 +1,4 @@
-package no.nav.adhoct;
+package no.nav.adhoct.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -6,37 +6,29 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
-//import java.text.SimpleDateFormat;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-
 @Controller
 public class NewJobController {
-
 
 	@Autowired
     private JdbcTemplate jdbcTemplate;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(NewJobController.class);	
 
-	
+/*	
 	@GetMapping("/nyjobb")
 	public String nyjobb(Model model) {		     
 		model.addAttribute("title", "AdHoc App");
@@ -58,87 +50,7 @@ public class NewJobController {
 	    model.addAttribute("content", textul);
 		return "index";
 	}
-	
-	
-	
-	
-	@RequestMapping(value = "/nyjobb", method = RequestMethod.POST, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-	//@PostMapping("/nyjobb")
-	//This is the old part/function of savin' the data sent through form. OLD style within the thymleaf  
-	public String nyjobbPost(@RequestParam("uuid") String uuid, @RequestParam(value = "file", required = false) MultipartFile file, Model model) throws IOException {		     
-		model.addAttribute("title", "AdHoc App");
-		model.addAttribute("subtitle", "Ny Jobb, lagre fil");
-		String textul = " . . . saving . . . ";
-	    String filename = "";
-	    String extension = "";
-	    byte[] fileContent = null;
-	    if(file != null) {
-	    	filename = file.getOriginalFilename();
-	    	String[] getExtension = filename.split("\\.");
-	    	extension = getExtension[getExtension.length - 1];
-	    	fileContent = file.getBytes();
-	    }
-	    textul += " <hr> <meta http-equiv='refresh' content='1; url=/'>";	    
-	    
-	    int records = checkInputFile(uuid);
-	    //SimpleDateFormat timp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // I should replace this. I don't use this anymore.
-	    //String timp = dateFormatNow.toString();
-	    
-	    if(records > 0) {
-	    	textul = "There is a file for this Task already.<br>Try again with another Task ID! <hr> <meta http-equiv='refresh' content='3; url=/nyjobb'>";	    	
-	    } else {
-	    	LOGGER.info("The new job is saved.");
-	    	int checkTask_idInTASKtbl = checkTask(uuid);
-	    	if(checkTask_idInTASKtbl > 0) {
-	    		jdbcTemplate.update("INSERT INTO INPUT_FILE(TASK_UUID, FILE_TYPE, FILE_OBJECT) VALUES (?,?,?)", uuid, extension, fileContent);
-	    		jdbcTemplate.update("UPDATE TASK SET DATE_RECEIVED=SYSDATE, MAX_DOC_SPLIT=1 WHERE TASK_UUID=?", uuid);
-	    	} else {
-	    		jdbcTemplate.update("INSERT INTO TASK(TASK_UUID, DATE_RECEIVED, MAX_DOC_SPLIT) VALUES (?, SYSDATE, 1)", uuid);
-	    		jdbcTemplate.update("INSERT INTO INPUT_FILE(TASK_UUID, FILE_TYPE, FILE_OBJECT) VALUES (?,?,?)", uuid, extension, fileContent);
-	    		LOGGER.info("New TASK_UUID created. The new TASK_ID is " + uuid);
-	    	}
-	    }
-	    
-	    model.addAttribute("content", textul);
-		return "index";
-	}
-	
-	
-	//This is the first API which is loading the file into database. It is no needed anymore.
-	@PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)	
-    public ResponseEntity<?> uploadFile(@RequestParam("uuid") String uuid, @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
-        String filename = "";
-	    String extension = "";
-        byte[] fileContent = null;
-	    if(file != null) {
-	    	filename = file.getOriginalFilename();
-	    	String[] getExtension = filename.split("\\.");
-	    	extension = getExtension[getExtension.length - 1];
-	    	fileContent = file.getBytes();
-	    }
-	    
-	    int records = 0;
-	    if(uuid != null) {
-	    	records = checkInputFile(uuid);
-	    }
-	    if(records > 0) {
-	    	LOGGER.info("There is a file for this Task already. Try again with another Task ID!");
-	    } else {
-	    	LOGGER.info("The new job is saved.");
-	    	int checkTask_idInTASKtbl = checkTask(uuid);
-	    	if(checkTask_idInTASKtbl > 0) {
-	    		jdbcTemplate.update("INSERT INTO INPUT_FILE(TASK_UUID, FILE_TYPE, FILE_OBJECT) VALUES (?,?,?)", uuid, extension, fileContent);
-	    		jdbcTemplate.update("UPDATE TASK SET DATE_RECEIVED=SYSDATE, MAX_DOC_SPLIT=1 WHERE TASK_UUID=?", uuid);
-	    	} else {
-	    		jdbcTemplate.update("INSERT INTO TASK(TASK_UUID, DATE_RECEIVED, MAX_DOC_SPLIT) VALUES (?, SYSDATE, 1)", uuid);
-	    		jdbcTemplate.update("INSERT INTO INPUT_FILE(TASK_UUID, FILE_TYPE, FILE_OBJECT) VALUES (?,?,?)", uuid, extension, fileContent);
-	    		LOGGER.info("New TASK_UUID created. The new TASK_ID is " + uuid);
-	    	}
-	    	LOGGER.info(String.format("File name '%s' uploaded successfully.", file.getOriginalFilename()));
-	    }
-        return ResponseEntity.ok().build();
-    }
-	
+	*/	
 	
 	
 	@PostMapping(value = "/api/savenyjobb", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)	

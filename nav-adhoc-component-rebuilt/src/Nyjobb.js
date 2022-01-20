@@ -136,7 +136,8 @@ class Nyjobb extends Component {
         formData.append('requester', this.state.requester);
         formData.append('document_title', this.state.document_title);
         formData.append('archive_unit', this.state.archive_unit);
-        formData.append('archive_theme', this.state.archive_theme);        
+        formData.append('archive_theme', this.state.archive_theme);
+        formData.append('token', localStorage.getItem("token"));
         formData.append('file', this.state.selectedFileCSV);
         formData.append('file2', this.state.selectedFileWORD);
         
@@ -165,8 +166,7 @@ class Nyjobb extends Component {
     	const props = {
     		      dangerouslySetInnerHTML: { __html: '<meta http-equiv="refresh" content="0; url=/nyjobb" />' },
 	    };    	
-    	const {title} = this.state;
-    	//Here I have to get further with the Form in REACT format. For the moment I keep this redirect to the Form in java format.  
+    	const {title} = this.state;  
     	
         return (<React.Fragment>
 		            <AppNavbar showSelectCSVfc = {this.showSelectCSVfc} showSelectWORDfc = {this.showSelectWORDfc} handleSubmit = {this.handleSubmit} disableKnapp = {this.state.disabledKnappLagreJobb} />
@@ -191,16 +191,16 @@ class Nyjobb extends Component {
 						        		</td>
 							        	<td>
 							        		<Label htmlFor="document_title">Brevtittel:</Label>
-							        		<Input name="document_title" id="document_title" type="text"  value={this.state.document_title} onChange={this.handleChange}  />
+							        		<Input name="document_title" id="document_title" type="text"  value={this.state.document_title} onChange={this.handleChange} />
 						        		</td>
 						        		<td>
 							        		<Label htmlFor="archive_unit">Journalførende enhet:</Label>
-							        		<Input name="archive_unit" id="archive_unit" type="text"  value={this.state.archive_unit} onChange={this.handleChange}  />
+							        		<Input name="archive_unit" id="archive_unit" type="text"  value={this.state.archive_unit} onChange={this.handleChange} />
 						        		</td>
 							        	<td>
 							        		<Label htmlFor="archive_theme">Tema:</Label>
-							        		<Input name="archive_theme" id="archive_theme" type="text"  value={this.state.archive_theme} onChange={this.handleChange}  />
-						        		</td>
+							        		<Input name="archive_theme" id="archive_theme" type="text"  value={this.state.archive_theme} onChange={this.handleChange} />
+							        	</td>
 						        	</tr>
 						        </table>
 					        </div>
